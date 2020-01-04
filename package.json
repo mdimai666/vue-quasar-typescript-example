@@ -1,0 +1,42 @@
+{
+  "name": "quasar2",
+  "version": "0.0.1",
+  "description": "A Quasar Framework app",
+  "productName": "Quasar App",
+  "cordovaId": "org.cordova.quasar.app",
+  "capacitorId": "",
+  "author": "mdimai666 <mdimai666@mail.ru>",
+  "private": true,
+  "scripts": {
+    "start": "node bin/www",
+    "test": "echo \"No test specified\" && exit 0",
+    "build": "quasar build -m pwa",
+    "build-spa": "quasar build -m spa",
+    "full_update": "git reset --hard &&  git pull && npm i && quasar build",
+    "update": "git reset --hard &&  git pull && quasar build",
+    "cordova:dev": "quasar dev -m cordova -T android --debug --buildConfig=\"build.cordova.json\"",
+    "cordova:build": "quasar build -m cordova -T android --debug --buildConfig=\"build.cordova.json\"",
+    "cordova:build-release": "quasar build -m cordova -T android --release --buildConfig=\"build.cordova.json\"",
+    "fopenapk:debug": "start cmd /C \"cd src-cordova/platforms/android/app/build/outputs/apk/debug/ && explorer .\"",
+    "fopenapk:release": "start cmd /C \"cd src-cordova/platforms/android/app/build/outputs/apk/release/ && explorer .\"",
+    "build:android": "start cmd /C \" npm run cordova:build && npm run fopenapk:debug \"",
+    "build:android-release": "start cmd /C \" npm run cordova:build-release && npm run fopenapk:release \""
+  },
+  "dependencies": {
+    "@quasar/extras": "^1.0.0",
+    "axios": "^0.18.1",
+    "quasar": "^1.0.0",
+    "vue-i18n": "^8.0.0"
+  },
+  "devDependencies": {
+    "@quasar/app": "^1.0.0"
+  },
+  "engines": {
+    "node": ">= 8.9.0",
+    "npm": ">= 5.6.0",
+    "yarn": ">= 1.6.0"
+  },
+  "browserslist": [
+    "last 1 version, not dead, ie >= 11"
+  ]
+}
