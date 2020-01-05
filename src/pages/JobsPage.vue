@@ -30,14 +30,18 @@
 
     <p></p>
 
-    <q-list bordered separator v-for="item in items" :key="item.id">
+    <q-list bordered separator>
       <q-item
+        v-for="item in items"
+        :key="item.id"
         clickable
         v-ripple
-        :style="{ 'background-color': row_color(item) }"
+        :class="['d-item', row_class(item)]"
       >
+        <!-- :style="{ 'background-color': row_color(item) }" -->
         <q-item-label lines="1" class="absolute " style="left:10px;right:10px;">
-          #{{ item.id }} | {{ item.author }}
+          {{ item.author }}
+          <span class="text-grey float-right"> #{{ item.id }} </span>
         </q-item-label>
 
         <q-item-section avatar @click.native="onItemClick(item)">
@@ -58,11 +62,11 @@
             class="text-caption text-primary"
             @click.native="onItemClick(item)"
           >
-            {{ item.dt_insert | AsDateTime }}
+            {{ item.dt_insert | TimeSince }}
           </q-item-label>
           <q-item-label
             caption
-            class="item-body"
+            class="item-body text-black"
             lines="4"
             @click.native="onItemClick(item)"
           >
@@ -232,7 +236,7 @@ export default {
   name: 'PageApi',
   data: () => ({
     items: [],
-    backend: 'http://192.168.0.6:5000/api/jobs',
+    controller: 'jobs',
     v_page: 1,
     v_perpage: 15,
     v_totalPages: 1,
@@ -265,7 +269,7 @@ export default {
     openURL,
 
     async api_get() {
-      let link = `jobs/list?page=${this.v_page}&perpage=${this.v_perpage}${this.get_modeAsQueryString()}`;
+      let link = `${this.controller}/list?page=${this.v_page}&perpage=${this.v_perpage}${this.get_modeAsQueryString()}`;
       console.log(link);
       let res = await this.$api.get(link);
 
@@ -293,14 +297,14 @@ export default {
         author: 'mdimai666',
       }
 
-      let res = await this.$api.post('jobs', item);
+      let res = await this.$api.post(this.controller, item);
 
       console.log(res);
 
     },
 
     async click_del__reallyDel(id) {
-      let res = await this.$api.delete('jobs/' + id);
+      let res = await this.$api.delete(`${this.controller}/${id}`);
 
       this.items = this.items.filter(s => s.id != id);
 
@@ -335,7 +339,7 @@ export default {
         { op: 'replace', path: `/${_propName}`, value: _val },
       ]
 
-      let res = await this.$api.patch('jobs/' + id, patch);
+      let res = await this.$api.patch(`${this.controller}/${id}`, patch);
 
       let index = this.items.findIndex(s => s.id != id);
       let item = res.data;
@@ -382,15 +386,18 @@ export default {
     },
 
     get_src_gromImgHtml(imgHtml) {
-      if (!imgHtml) return '';
+
+      const def = 'statics/empty-photo.jpg';
+
+      if (!imgHtml) return def;
       // input = "<img src="https://sun1-18.userapi.com/c849416/v849416832/16382e/6-2supeqNd4.jpg?ava=1" class="wi_img _p128419803">"
       let reg = /src="(.*?)"/;
       let v = imgHtml.match(reg)[1];
 
-      if(v.indexOf('http') == -1)
+      if (v.indexOf('http') == -1)
         v = 'https://m.vk.com/' + trimSlash(v);
 
-      return v ? v : '';
+      return v ? v : def;
 
     },
 
@@ -402,13 +409,20 @@ export default {
       else if (e.m_spam) return 'orange';
 
       return 'unset'
+    },
+    row_class(e) {
+
+      if (e.m_spam) return `m_spam`;
+      else if (e.m_link) return `m_link`;
+      else if (e.deleted) return `m_del`;
+      else return ``;
     }
 
   },
 
   computed: {
 
-  }
+  },
 
 }
 
@@ -431,10 +445,42 @@ export default {
 
 </script>
 
-<style lang="sass">
-// .item-body
-  // background-color: red
-  // height: 3.65em
-  // overflow: hidden
-    
+<style lang="scss" scoped>
+// darken,lighten
+
+$color-spam: rgb(245, 220, 174);
+$color-deleted: rgb(255, 176, 166);
+$color-link: rgb(198, 228, 255);
+
+@mixin stripped_bg($bg: gray, $bg2: white, $strip: red, $strip2: gray) {
+  background: repeating-linear-gradient(
+      45deg,
+      transparent,
+      transparent 10px,
+      $strip 10px,
+      $strip2 20px
+    ),
+    linear-gradient(to bottom, $bg, $bg2);
+}
+
+@mixin strip_overlap($color) {
+  $bg: lighten($color, 10%); //, lighten($color, 30%)
+  @include stripped_bg(lighten($color, 20%), $color, $bg, $bg);
+}
+
+.d-item {
+  &.m_link {
+    @include strip_overlap(lighten($color-link, 5%));
+    background-color: $color-link;
+  }
+  &.m_spam {
+    // @include strip_overlap($color-spam);
+    @include strip_overlap(lighten($color-spam, 5%));
+    // background-color: $color-spam;
+  }
+  &.m_del {
+    @include strip_overlap(lighten($color-deleted, 10%));
+    // background-color: $color-deleted;
+  }
+}
 </style>

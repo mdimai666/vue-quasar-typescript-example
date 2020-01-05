@@ -6,8 +6,11 @@
 
 <script>
 
-window.clone = a => a && JSON.parse(JSON.stringify(a));
+import moment from 'moment'
 
+moment.locale('ru')
+
+window.clone = a => a && JSON.parse(JSON.stringify(a));
 
 
 

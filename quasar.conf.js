@@ -1,6 +1,14 @@
 // Configuration for your app
 // https://quasar.dev/quasar-cli/quasar-conf-js
 
+var path = require('path');
+var fs = require('fs');
+var dotenv = require('dotenv').config();
+
+if(!fs.existsSync('./.env'))
+  throw new Error('/.env file not found.\n See .env.example ')
+
+
 module.exports = function (ctx) {
   return {
     // app boot file (/src/boot)
@@ -16,7 +24,7 @@ module.exports = function (ctx) {
 
     // https://quasar.dev/quasar-cli/quasar-conf-js#Property%3A-css
     css: [
-      'app.sass'
+      'app.scss'
     ],
 
     // https://github.com/quasarframework/quasar/tree/dev/extras
@@ -35,7 +43,7 @@ module.exports = function (ctx) {
     // https://quasar.dev/quasar-cli/quasar-conf-js#Property%3A-framework
     framework: {
       iconSet: 'material-icons', // Quasar icon set
-      lang: 'en-us', // Quasar language pack
+      lang: 'ru', // Quasar language pack
 
       // Possible values for "all":
       // * 'auto' - Auto-import needed Quasar components & directives
@@ -51,8 +59,17 @@ module.exports = function (ctx) {
 
       // Quasar plugins
       plugins: [
-        'LocalStorage'
-      ]
+        'LocalStorage',
+        'Notify',
+      ],
+      config: {
+        notify: {
+          position: 'top-right',
+          timeout: 1500,
+          color: 'white',
+          textColor: 'black',
+        }
+      }
     },
 
     // https://quasar.dev/quasar-cli/cli-documentation/supporting-ie
