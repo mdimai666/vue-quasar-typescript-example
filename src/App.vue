@@ -5,7 +5,16 @@
 </template>
 
 <script>
+
+window.clone = a => a && JSON.parse(JSON.stringify(a));
+
+
+
+
 export default {
-  name: 'App'
+  name: 'App',
+  created(){
+    window.App = this;
+  }
 }
 </script>

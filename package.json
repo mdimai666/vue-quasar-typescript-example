@@ -9,6 +9,7 @@
   "private": true,
   "scripts": {
     "start": "node bin/www",
+    "dev": "quasar dev",
     "test": "echo \"No test specified\" && exit 0",
     "build": "quasar build -m pwa",
     "build-spa": "quasar build -m spa",
@@ -20,7 +21,7 @@
     "fopenapk:debug": "start cmd /C \"cd src-cordova/platforms/android/app/build/outputs/apk/debug/ && explorer .\"",
     "fopenapk:release": "start cmd /C \"cd src-cordova/platforms/android/app/build/outputs/apk/release/ && explorer .\"",
     "build:android": "start cmd /C \" npm run cordova:build && npm run fopenapk:debug \"",
-    "build:android-release": "start cmd /C \" npm run cordova:build-release && npm run fopenapk:release \""
+    "build:android-release": "start cmd /C \" npm run cordova:build-release && npm run fopenapk:release \"",
   },
   "dependencies": {
     "@quasar/extras": "^1.0.0",
