@@ -1,5 +1,6 @@
 import api from './api'
 import axios from 'axios'
+import { AxiosInstance } from 'axios'
 
 // "async" is optional
 // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
@@ -14,3 +15,10 @@ export default async ({ app, router, Vue /*, ... */ }) => {
 // export default async ({ Vue }: { Vue: any }) => {
 //   Vue.prototype.$api = api
 // }
+
+declare module 'vue/types/vue' {
+  // 3. Объявите расширение для Vue
+  interface Vue {
+    $api: AxiosInstance
+  }
+}

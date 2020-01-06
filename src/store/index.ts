@@ -1,7 +1,6 @@
 import Vue from 'vue'
-import Vuex from 'vuex'
-
-// import example from './module-example'
+import * as Vuex from 'vuex'
+import RootStore from './RootStore'
 
 Vue.use(Vuex)
 
@@ -14,7 +13,7 @@ Vue.use(Vuex)
  * with the Store instance.
  */
 
-// export default function (/* { ssrContext } */) {
+// export function d(/* { ssrContext } */) {
 //   const Store = new Vuex.Store({
 //     modules: {
 //       // example
@@ -28,6 +27,15 @@ Vue.use(Vuex)
 //   return Store
 // }
 
-export default new Vuex.Store({
-  strict: process.env.DEV === 'true'
-});
+
+export interface StoreType {
+  root: RootStore
+}
+
+const store = new Vuex.Store<StoreType>({
+  modules: {
+    root: RootStore
+  }
+})
+
+export default store

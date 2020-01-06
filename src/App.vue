@@ -26,9 +26,8 @@ declare global {
 
 @Component
 export default class App extends Vue {
-  // name: 'App'
   created() {
-    window.App = this;
+    window.App = this
   }
 }
 

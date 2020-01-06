@@ -112,11 +112,19 @@
 
 <script  lang="ts">
 import Vue from 'vue'
+import Component from 'vue-class-component';
 
-export default Vue.extend({
-  name: 'Sidebar1',
-  data() {
-    return {}
+@Component({})
+export default class Sidebar1 extends Vue {
+  m(){
+    let v = this.$api;
   }
-})
+}
+
+// export default Vue.extend({
+//   name: 'Sidebar1',
+//   data() {
+//     return {}
+//   }
+// })
 </script>

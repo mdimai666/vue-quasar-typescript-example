@@ -242,13 +242,13 @@ export default class LogsPage extends Vue {
   // export default Vue.extend({
   // name: 'PageApi',
   // data: () => ({
-  items: Array<JobItem> = [];
+  items: JobItem[] = [];
   controller: string = 'jobs';
   v_page: int = 1;
   v_perpage: int = 15;
   v_totalPages: int = 1;
   v_totalCount: int = 1;
-  c_perPageVariants: Array<int> = [5, 10, 15, 25, 50];
+  c_perPageVariants: int[] = [5, 10, 15, 25, 50];
 
   filter_mode: string = 'actual';
   // }),

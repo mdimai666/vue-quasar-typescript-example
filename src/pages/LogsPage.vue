@@ -10,8 +10,18 @@
     </div>
 
     <p></p>
+    <q-separator spaced="" />
+    <p></p>
 
-    <hr />
+    <q-btn push size="lg" label="Dialog" @click="dd()" />
+
+    <p>
+      count1 = <b>{{ count1 }}</b>
+    </p>
+
+    <p></p>
+    <q-separator spaced="" />
+    <p></p>
 
     <!-- :pagination="table.pagination" -->
     <!-- :rows-per-page-options="table.rows-per-page-options" -->
@@ -35,6 +45,11 @@ import { openURL, LocalStorage } from 'quasar';
 import Component from 'vue-class-component';
 import { Watch } from 'vue-property-decorator';
 import { clone } from 'src/js/functions1';
+import store, { StoreType } from '../store/index';
+import { Store } from 'vuex';
+import { getModule } from 'vuex-module-decorators';
+import RootStore from '../store/RootStore';
+
 
 const columns_sample = [
   // array of Objects
@@ -111,13 +126,13 @@ const columns_logs = [
 export default class LogsPage extends Vue {
   // name: 'LogsName',
   // data: () => ({
-  items: Array<LogItem> = [];
+  items: LogItem[] = [];
   controller: string = 'logs';
   v_page: int = 1;
   v_perpage: int = 15;
   v_totalPages: int = 1;
   v_totalCount: int = 1;
-  c_perPageVariants: Array<int> = [5, 10, 15, 25, 50];
+  c_perPageVariants: int[] = [5, 10, 15, 25, 50];
 
   filter_mode: string = 'actual';
 
@@ -134,8 +149,8 @@ export default class LogsPage extends Vue {
   ];
 
   table = {
-    loading: false,
-  }
+    loading: false
+  };
 
   // }),
 
@@ -156,6 +171,42 @@ export default class LogsPage extends Vue {
     this.v_perpage = LocalStorage.getItem('v_perpage') || 10;
 
     // this.api_get();
+  }
+
+  root = getModule(RootStore, this.$store)
+
+  c_counter = this.root.get1
+
+  async dd() {
+
+    // console.warn(store);
+
+    // store.dispatch('Act1', 0);
+    // (this.$store as any).actions.Act1();
+    // this.$store.state.root
+
+    // store.commit('increment', 1)
+
+    // const root = getModule(RootStore, this.$store);
+    // this.root.Act1()
+    console.warn(this.c_counter)
+    // await root.Act1()
+    // await root.Act1()
+
+    // console.warn((this.$store as Store<StoreType>).state.root.count)
+
+
+
+    // MyModuleInstance.increment(1)
+  }
+
+  get count1() {
+    // return (store as any).root.count
+    console.warn(this.$store.state.root.count);
+    return this.$store.state.root.count;
+
+    // let s = (this.$store as RootStore)
+    // return  s.
   }
 
   // methods: {

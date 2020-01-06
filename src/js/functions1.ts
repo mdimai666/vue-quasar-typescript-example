@@ -2,7 +2,7 @@ export function clone(obj: Object) {
   return JSON.parse(JSON.stringify(obj));
 }
 
-export function array_move(arr: Array<any>, old_index: number, new_index: number) {
+export function array_move(arr: any[], old_index: number, new_index: number) {
 
   if (new_index >= arr.length) {
     var k = new_index - arr.length + 1;
@@ -101,7 +101,7 @@ export function forwardSlash(str: string) {
  * @example
  * {0: value1, 1: value 2}
  */
-export function toObjectArray(arr: Array<any>) {
+export function toObjectArray(arr: any[]) {
   var rv: any = {};
   for (var i = 0; i < arr.length; ++i)
     rv[i] = arr[i];
@@ -129,7 +129,7 @@ export function fullUrl(...params: string[]) {
   return h;
 }
 
-// export function all_childs(arr: Array<any>, id: number | Array<number>, prop_parent_id: string, __maxDepth = 15) {
+// export function all_childs(arr: any[], id: number | number[], prop_parent_id: string, __maxDepth = 15) {
 //   if (__maxDepth < 1) return []
 //   prop_parent_id = prop_parent_id || 'parent_id'
 //   if (id.length !== 0 && !id.length) id = [id]

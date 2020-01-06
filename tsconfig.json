@@ -7,18 +7,19 @@
     "target": "es6",
     "strict": true,
     "experimentalDecorators": true,
+    "importHelpers": true,
+    "noImplicitThis": true,
     "module": "esnext",
     // "module": "es2015",
     "moduleResolution": "node",
     "baseUrl": ".",
     "types": [
       "quasar",
-      "node",
+      "node"
     ]
   },
   "types": [
-    "./src/types.ts",
-    "./src/globals.ts"
+    "/src/types.ts",
   ],
   "exclude": [
     "node_modules",
@@ -27,6 +28,6 @@
   ],
   "include": [
     "src/**/*",
-    "/src/globals.d.ts"
+    
   ]
 }

@@ -6,6 +6,6 @@ import { AxiosInstance } from 'axios';
 declare module 'vue/types/vue' {
   // 3. Объявите расширение для Vue
   interface Vue {
-    $api: AxiosInstance
+    // $api: AxiosInstance
   }
 }
