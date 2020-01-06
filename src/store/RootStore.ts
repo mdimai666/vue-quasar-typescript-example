@@ -38,7 +38,7 @@ export default class RootStore extends VuexModule {
 
     @Action
     async Act1() {
-        this.Act2()
+        // this.Act2()
         this.increment(22)
 
     }

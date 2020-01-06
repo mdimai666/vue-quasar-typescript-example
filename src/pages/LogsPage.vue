@@ -152,6 +152,12 @@ export default class LogsPage extends Vue {
     loading: false
   };
 
+  root = getModule(RootStore, this.$store)
+
+  c_counter = this.root.get1
+
+  openURL = openURL
+
   // }),
 
   @Watch('v_page')
@@ -173,40 +179,15 @@ export default class LogsPage extends Vue {
     // this.api_get();
   }
 
-  root = getModule(RootStore, this.$store)
-
-  c_counter = this.root.get1
-
   async dd() {
 
-    // console.warn(store);
+    await this.root.Act1()
 
-    // store.dispatch('Act1', 0);
-    // (this.$store as any).actions.Act1();
-    // this.$store.state.root
-
-    // store.commit('increment', 1)
-
-    // const root = getModule(RootStore, this.$store);
-    // this.root.Act1()
-    console.warn(this.c_counter)
-    // await root.Act1()
-    // await root.Act1()
-
-    // console.warn((this.$store as Store<StoreType>).state.root.count)
-
-
-
-    // MyModuleInstance.increment(1)
   }
 
   get count1() {
-    // return (store as any).root.count
-    console.warn(this.$store.state.root.count);
     return this.$store.state.root.count;
 
-    // let s = (this.$store as RootStore)
-    // return  s.
   }
 
   // methods: {
