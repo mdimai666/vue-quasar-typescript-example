@@ -21,19 +21,32 @@
     "fopenapk:debug": "start cmd /C \"cd src-cordova/platforms/android/app/build/outputs/apk/debug/ && explorer .\"",
     "fopenapk:release": "start cmd /C \"cd src-cordova/platforms/android/app/build/outputs/apk/release/ && explorer .\"",
     "build:android": "start cmd /C \" npm run cordova:build && npm run fopenapk:debug \"",
-    "build:android-release": "start cmd /C \" npm run cordova:build-release && npm run fopenapk:release \""
+    "build:android-release": "start cmd /C \" npm run cordova:build-release && npm run fopenapk:release \"",
+    "lint": "eslint --ext .js,.ts,.vue --ignore-path .gitignore ./",
+    "test-dependies": "npm ls --depth=0"
   },
   "dependencies": {
     "@quasar/extras": "^1.0.0",
     "axios": "^0.18.1",
     "dotenv": "^8.2.0",
+    "eslint": "^6.8.0",
     "moment": "^2.24.0",
     "quasar": "^1.0.0",
-    "vue-i18n": "^8.0.0"
+    "tslint": "^5.20.1",
+    "vue-class-component": "^7.1.0",
+    "vue-i18n": "^8.0.0",
+    "vue-property-decorator": "^8.3.0"
   },
   "devDependencies": {
     "@quasar/app": "^1.0.0",
-    "@quasar/quasar-app-extension-dotenv": "^1.0.0"
+    "@quasar/quasar-app-extension-dotenv": "^1.0.0",
+    "@quasar/quasar-app-extension-typescript": "^1.0.0-beta.2",
+    "@types/node": "^11.9.5",
+    "@typescript-eslint/eslint-plugin": "^1.12.0",
+    "@typescript-eslint/parser": "^1.12.0",
+    "eslint-config-prettier": "^6.0.0",
+    "typescript": "^3.3.3",
+    "vuex-module-decorators": "^0.11.0"
   },
   "engines": {
     "node": ">= 8.9.0",

@@ -7,7 +7,11 @@ export const instance = axios.create({
 
 // console.warn(process.env);
 
-let backend = (process.env.BACKEND.includes('//')) ? process.env.BACKEND : '//' + process.env.BACKEND;
+let backend = process.env.BACKEND
+
+if (backend)
+  backend = backend.includes('//') ? process.env.BACKEND : '//' + process.env.BACKEND;
+
 instance.defaults.baseURL = backend + '/api/';
 
 Object.defineProperty(instance, "BackendURL", {
@@ -17,8 +21,8 @@ Object.defineProperty(instance, "BackendURL", {
   configurable: true
 });
 
-instance.fullUrl = function (relativeUrl) {
-  return fullUrl(instance.defaults.baseURL, relativeUrl)
+(instance as any).fullUrl = function (relativeUrl: string) {
+  return fullUrl(instance.defaults.baseURL as string, relativeUrl)
 }
 
 export default instance

@@ -2,29 +2,29 @@ import { date } from 'quasar'
 import { translate_monthName } from './functions1'
 import api from '../boot/api'
 
-import moment from 'moment'
+import * as moment from 'moment'
 
-export function AsDateTime(value) {
+export function AsDateTime(value: Date): string {
     if (!value) return value
     return date.formatDate(value, 'H:mm D ') + translate_monthName(date.formatDate(value, 'MMM'))
 }
 
-export function AsFullDateTime(value) {
+export function AsFullDateTime(value: Date): string {
     if (!value) return value
     return date.formatDate(value, 'H:mm D ') + translate_monthName(date.formatDate(value, 'MMMM'))
 }
 
-export function AsDate(value) {
+export function AsDate(value: Date): string {
     if (!value) return value
     return date.formatDate(value, 'D ') + translate_monthName(date.formatDate(value, 'MMM'))
 }
 
-export function BackendUrl(value) {
+export function BackendUrl(value: string): string {
     if (!value) return value
-    return api.fullUrl(value);
+    return (api as any).fullUrl(value);
 }
 
-export function AsCalendar(value) {
+export function AsCalendar(value: Date): string {
     let weekDays = [
         'none',
         'Пн',
@@ -40,7 +40,7 @@ export function AsCalendar(value) {
     return weekDays[Number(date.formatDate(value, 'E'))] + ' ' + date.formatDate(value, 'D ') + translate_monthName(date.formatDate(value, 'MMMM')) + date.formatDate(value, ' YYYY')
 }
 
-export function FileSize(bytes, si) {
+export function FileSize(bytes: number, si: boolean): string {
     var thresh = si ? 1000 : 1024;
     if (Math.abs(bytes) < thresh) {
         return bytes + ' B';
@@ -56,8 +56,8 @@ export function FileSize(bytes, si) {
     return bytes.toFixed(1) + ' ' + units[u];
 }
 
-export function TimeSince(date) {
-    if(!date) return date;
+export function TimeSince(date: Date) {
+    if (!date) return date;
     return moment(date).fromNow();
 }
 

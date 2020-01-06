@@ -4,20 +4,38 @@
   </div>
 </template>
 
-<script>
+<script  lang="ts">
 
-import moment from 'moment'
+// https://github.com/Xkonti/quasar-clean-typescript/tree/master/src - project ts sample
 
-moment.locale('ru')
+import Vue from 'vue';
+import moment from 'moment';
+import Component from 'vue-class-component';
+import { clone } from './js/functions1';
 
-window.clone = a => a && JSON.parse(JSON.stringify(a));
+moment.locale('ru');
 
+window.clone = clone
 
+declare global {
+  interface Window {
+    App: any;
+    clone: (a: object) => object;
+  }
+}
 
-export default {
-  name: 'App',
-  created(){
+@Component
+export default class App extends Vue {
+  // name: 'App'
+  created() {
     window.App = this;
   }
 }
+
+// export default Vue.extend({
+//   name: 'App',
+//   created() {
+//     window.App = this;
+//   }
+// });
 </script>

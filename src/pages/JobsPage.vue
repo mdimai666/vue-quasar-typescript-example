@@ -227,35 +227,53 @@
   </q-page>
 </template>
 
-<script>
+<script  lang="ts">
+import Vue from 'vue';
 
-import { LocalStorage, openURL } from 'quasar'
-import { trimSlash } from '../js/functions1'
+import { LocalStorage, openURL } from 'quasar';
+import { trimSlash, clone } from '../js/functions1';
+import Component from 'vue-class-component';
+import { Watch, Provide } from 'vue-property-decorator';
 
-export default {
-  name: 'PageApi',
-  data: () => ({
-    items: [],
-    controller: 'jobs',
-    v_page: 1,
-    v_perpage: 15,
-    v_totalPages: 1,
-    v_totalCount: 1,
-    c_perPageVariants: [5, 10, 15, 25, 50],
 
-    filter_mode: 'actual',
-  }),
+@Component
+// export default class LogsPage extends Vue implements Vue {
+export default class LogsPage extends Vue {
+  // export default Vue.extend({
+  // name: 'PageApi',
+  // data: () => ({
+  items: Array<JobItem> = [];
+  controller: string = 'jobs';
+  v_page: int = 1;
+  v_perpage: int = 15;
+  v_totalPages: int = 1;
+  v_totalCount: int = 1;
+  c_perPageVariants: Array<int> = [5, 10, 15, 25, 50];
 
-  watch: {
-    v_perpage(n, o) {
-      LocalStorage.set('v_perpage', n);
-      this.api_get();
-    },
-    v_page(n, o) {
-      this.api_get();
-    },
+  filter_mode: string = 'actual';
+  // }),
 
-  },
+  // watch: {
+  //   v_perpage(n:int, o:int) {
+  //     LocalStorage.set('v_perpage', n);
+  //     this.api_get();
+  //   },
+  //   v_page(n, o) {
+  //     this.api_get();
+  //   },
+
+  // }
+
+  @Watch('v_page')
+  onPageChanged(v: int, old: int) {
+    LocalStorage.set('v_perpage', v);
+  }
+
+  @Watch('v_perpage')
+  onPerPageChanged(v: int, old: int) {
+    LocalStorage.set('v_perpage', v);
+    this.api_get();
+  }
 
   created() {
     console.log(123);
@@ -263,186 +281,181 @@ export default {
     this.v_perpage = LocalStorage.getItem('v_perpage') || 10;
 
     this.api_get();
-  },
+  }
 
-  methods: {
-    openURL,
+  // openURL = (url) =  => openU,
+  // methods: {
 
-    async api_get() {
-      let link = `${this.controller}/list?page=${this.v_page}&perpage=${this.v_perpage}${this.get_modeAsQueryString()}`;
-      console.log(link);
-      let res = await this.$api.get(link);
+  async api_get() {
+    let link = `${this.controller}/list?page=${this.v_page}&perpage=${
+      this.v_perpage
+    }${this.get_modeAsQueryString()}`;
+    console.log(link);
+    let res = await this.$api.get(link);
 
+    if (res.status == 200 && res.data) {
+      let items = res.data.data;
+      console.log(res.data);
 
-      if (res.status == 200 && res.data) {
+      this.items = clone(items);
+      this.v_totalPages = res.data.totalPages;
+      this.v_totalCount = res.data.totalCount;
 
-        let items = res.data.data;
-        console.log(res.data);
-
-        this.items = clone(items);
-        this.v_totalPages = res.data.totalPages;
-        this.v_totalCount = res.data.totalCount;
-
-        return this.items;
-      }
-
-      return false;
-
-    },
-
-    async api_add() {
-      let item = {
-        id: 666,
-        body: 'body',
-        author: 'mdimai666',
-      }
-
-      let res = await this.$api.post(this.controller, item);
-
-      console.log(res);
-
-    },
-
-    async click_del__reallyDel(id) {
-      let res = await this.$api.delete(`${this.controller}/${id}`);
-
-      this.items = this.items.filter(s => s.id != id);
-
-      console.log(res);
-    },
-
-    onItemClick(item) {
-      this.do_mark(item, 'm_link', true);
-      this.openURL('https://m.vk.com/' + item.link)
-    },
-
-    async click_del(id, _item) {
-      await this.do_mark(_item, 'deleted', !_item.deleted);
-    },
-    async click_spam(id, _item) {
-      await this.do_mark(_item, 'm_spam', !_item.m_spam);
-    },
-    async click_link(id, _item) {
-      await this.do_mark(_item, 'm_link', !_item.m_link);
-    },
-
-    async do_mark(_item, _propName, _val) {
-
-      const id = _item.id;
-
-      if (!id) throw new Error("ID required");
-
-      _item[_propName] = _val;
-
-      let patch = [
-        // {op: 'replace', path: '/deleted', value: !_item.deleted},
-        { op: 'replace', path: `/${_propName}`, value: _val },
-      ]
-
-      let res = await this.$api.patch(`${this.controller}/${id}`, patch);
-
-      let index = this.items.findIndex(s => s.id != id);
-      let item = res.data;
-
-      this.items[index] = clone(item);
-
-      console.log('item', res.data);
-
-      this.api_get();
-    },
-
-    async do_removeAll() {
-      let a = await Promise.all(...this.items.map(item => this.do_mark(item, 'deleted', true)));
-      this.api_get();
-    },
-
-    async do_spamAll() {
-      let a = await Promise.all(...this.items.map(item => this.do_mark(item, 'm_spam', true)));
-      this.api_get();
-    },
-
-    ///////////////////////////////////////
-
-    // onPageSelect(page){
-    //   console.log('page', page);
-    // },
-
-    set_mode(mode) {
-      this.filter_mode = mode;
-      this.api_get();
-    },
-
-    get_modeAsQueryString() {
-      let filter_mode = this.filter_mode;
-      function get_modeAsQueryString() {
-        if (filter_mode == 'spam') return `m_spam=true&m_link=&deleted=false`;
-        else if (filter_mode == 'linked') return `m_spam=&m_link=true&deleted=`;
-        else if (filter_mode == 'deleted') return `m_spam=false&m_link=&deleted=true`;
-        else if (filter_mode == 'all') return `m_spam=&m_link=&deleted=`;
-        // if(filter_mode == 'actual') 
-        else return `m_spam=false&m_link=&deleted=false&dt_actual=true`;
-      }
-      return `&${get_modeAsQueryString()}&`;
-    },
-
-    get_src_gromImgHtml(imgHtml) {
-
-      const def = 'statics/empty-photo.jpg';
-
-      if (!imgHtml) return def;
-      // input = "<img src="https://sun1-18.userapi.com/c849416/v849416832/16382e/6-2supeqNd4.jpg?ava=1" class="wi_img _p128419803">"
-      let reg = /src="(.*?)"/;
-      let v = imgHtml.match(reg)[1];
-
-      if (v.indexOf('http') == -1)
-        v = 'https://m.vk.com/' + trimSlash(v);
-
-      return v ? v : def;
-
-    },
-
-    ///////////////////////////////////////
-    row_color(e) {
-
-      if (e.m_link) return '#a2d2ff';
-      else if (e.deleted) return 'red';
-      else if (e.m_spam) return 'orange';
-
-      return 'unset'
-    },
-    row_class(e) {
-
-      if (e.m_spam) return `m_spam`;
-      else if (e.m_link) return `m_link`;
-      else if (e.deleted) return `m_del`;
-      else return ``;
+      return this.items;
     }
 
-  },
+    return false;
+  }
 
-  computed: {
+  async api_add() {
+    let item = {
+      id: 666,
+      body: 'body',
+      author: 'mdimai666'
+    };
 
-  },
+    let res = await this.$api.post(this.controller, item);
 
+    console.log(res);
+  }
+
+  async click_del__reallyDel(id: int) {
+    let res = await this.$api.delete(`${this.controller}/${id}`);
+
+    this.items = this.items.filter(s => s.id != id);
+
+    console.log(res);
+  }
+
+  onItemClick(item: JobItem) {
+    this.do_mark(item, 'm_link', true);
+    openURL('https://m.vk.com/' + item.link);
+  }
+
+  async click_del(id: int, _item: JobItem) {
+    await this.do_mark(_item, 'deleted', !_item.deleted);
+  }
+  async click_spam(id: int, _item: JobItem) {
+    await this.do_mark(_item, 'm_spam', !_item.m_spam);
+  }
+  async click_link(id: int, _item: JobItem) {
+    await this.do_mark(_item, 'm_link', !_item.m_link);
+  }
+
+  async do_mark(_item: JobItem, _propName: string, _val: any) {
+    const id = _item.id;
+
+    if (!id) throw new Error('ID required');
+
+    (_item as any)[_propName] = _val;
+
+    let patch = [
+      // {op: 'replace', path: '/deleted', value: !_item.deleted},
+      { op: 'replace', path: `/${_propName}`, value: _val }
+    ];
+
+    let res = await this.$api.patch(`${this.controller}/${id}`, patch);
+
+    let index = this.items.findIndex(s => s.id != id);
+    let item = res.data;
+
+    this.items[index] = clone(item);
+
+    console.log('item', res.data);
+
+    this.api_get();
+  }
+
+  async do_removeAll() {
+    let a = await Promise.all([
+      ...this.items.map(item => this.do_mark(item, 'deleted', true))
+    ]);
+    this.api_get();
+  }
+
+  async do_spamAll() {
+    let a = await Promise.all([
+      ...this.items.map(item => this.do_mark(item, 'm_spam', true))
+    ]);
+    this.api_get();
+  }
+
+  ///////////////////////////////////////
+
+  // onPageSelect(page){
+  //   console.log('page', page);
+  // },
+
+  set_mode(mode: string) {
+    this.filter_mode = mode;
+    this.api_get();
+  }
+
+  get_modeAsQueryString() {
+    let filter_mode = this.filter_mode;
+    function get_modeAsQueryString() {
+      if (filter_mode == 'spam') return `m_spam=true&m_link=&deleted=false`;
+      else if (filter_mode == 'linked') return `m_spam=&m_link=true&deleted=`;
+      else if (filter_mode == 'deleted')
+        return `m_spam=false&m_link=&deleted=true`;
+      else if (filter_mode == 'all') return `m_spam=&m_link=&deleted=`;
+      // if(filter_mode == 'actual')
+      else return `m_spam=false&m_link=&deleted=false&dt_actual=true`;
+    }
+    return `&${get_modeAsQueryString()}&`;
+  }
+
+  get_src_gromImgHtml(imgHtml: string) {
+    const def = 'statics/empty-photo.jpg';
+
+    if (!imgHtml) return def;
+    // input = "<img src="https://sun1-18.userapi.com/c849416/v849416832/16382e/6-2supeqNd4.jpg?ava=1" class="wi_img _p128419803">"
+    let reg = /src="(.*?)"/;
+
+    let match = imgHtml.match(reg);
+
+    let v: string = match ? match[1] : '';
+
+    if (v.indexOf('http') == -1) v = 'https://m.vk.com/' + trimSlash(v);
+
+    return v ? v : def;
+  }
+
+  ///////////////////////////////////////
+  row_color(e: JobItem) {
+    if (e.m_link) return '#a2d2ff';
+    else if (e.deleted) return 'red';
+    else if (e.m_spam) return 'orange';
+
+    return 'unset';
+  }
+
+  row_class(e: JobItem) {
+    if (e.m_spam) return `m_spam`;
+    else if (e.m_link) return `m_link`;
+    else if (e.deleted) return `m_del`;
+    else return ``;
+  }
 }
 
-// id: 72234
-// code: 0
-// source: null
-// title: null
-// author: "mdimai666"
-// link: null
-// deleted: false
-// body: "body"
-// json: null
-// dt_insert: "2020-01-05T06:05:12.315459+09:00"
-// dt_update: "2020-01-05T06:05:12.315459+09:00"
-// screenshot: null
-// img: null
-// m_spam: false
-// m_link: false
-// uid: null
-
+declare interface JobItem {
+  id: number; //72234
+  code: number; //0,
+  source: string;
+  title: string;
+  author: string; //"mdimai666"
+  link: string;
+  deleted: boolean;
+  body: string;
+  json: object;
+  dt_insert: Date; //"2020-01-05T06:05:12.315459+09:00"
+  dt_update: Date; //"2020-01-05T06:05:12.315459+09:00"
+  screenshot: string;
+  img: string;
+  m_spam: boolean;
+  m_link: boolean;
+  uid: string;
+}
 </script>
 
 <style lang="scss" scoped>

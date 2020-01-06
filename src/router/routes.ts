@@ -1,5 +1,6 @@
+import { RouteConfig } from 'vue-router';
 
-const routes = [
+const routes: RouteConfig[] = [
   {
     path: '/',
     component: () => import('layouts/MyLayout.vue'),
@@ -9,14 +10,14 @@ const routes = [
       { path: 'logs', component: () => import('pages/LogsPage.vue') }
     ]
   }
-]
+];
 
 // Always leave this as last one
 if (process.env.MODE !== 'ssr') {
   routes.push({
     path: '*',
     component: () => import('pages/Error404.vue')
-  })
+  });
 }
 
-export default routes
+export default routes;

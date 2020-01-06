@@ -1,0 +1,32 @@
+{
+  "mode": "'development",
+  "compilerOptions": {
+    "allowSyntheticDefaultImports": true,
+    "allowJs": true,
+    "sourceMap": true,
+    "target": "es6",
+    "strict": true,
+    "experimentalDecorators": true,
+    "module": "esnext",
+    // "module": "es2015",
+    "moduleResolution": "node",
+    "baseUrl": ".",
+    "types": [
+      "quasar",
+      "node",
+    ]
+  },
+  "types": [
+    "./src/types.ts",
+    "./src/globals.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist",
+    "src-cordova"
+  ],
+  "include": [
+    "src/**/*",
+    "/src/globals.d.ts"
+  ]
+}

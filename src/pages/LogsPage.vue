@@ -29,10 +29,15 @@
   </q-page>
 </template>
 
-<script>
-import { openURL, LocalStorage } from 'quasar'
+<script  lang="ts">
+import Vue from 'vue';
+import { openURL, LocalStorage } from 'quasar';
+import Component from 'vue-class-component';
+import { Watch } from 'vue-property-decorator';
+import { clone } from 'src/js/functions1';
 
-const columns_sample = [ // array of Objects
+const columns_sample = [
+  // array of Objects
   // column Object definition
   {
     // unique id
@@ -58,14 +63,15 @@ const columns_sample = [ // array of Objects
 
     // (optional) compare function if you have
     // some custom data or want a specific way to compare two rows
-    sort: (a, b, rowA, rowB) => parseInt(a, 10) - parseInt(b, 10),
+    sort: (a: any, b: any, rowA: any, rowB: any) =>
+      parseInt(a, 10) - parseInt(b, 10),
     // function return value:
     //   * is less than 0 then sort a to an index lower than b, i.e. a comes first
     //   * is 0 then leave a and b unchanged with respect to each other, but sorted with respect to all different elements
     //   * is greater than 0 then sort b to an index lower than a, i.e. b comes first
 
     // (optional) you can format the data with a function
-    format: (val, row) => `${val}%`,
+    format: (val: any, row: any) => `${val}%`,
     // one more format example:
     // format: val => val
     //   ? /* Unicode checkmark checked */ "\u2611"
@@ -83,60 +89,66 @@ const columns_sample = [ // array of Objects
   { name: 'fat', label: 'Fat (g)', field: 'fat', sortable: true },
   { name: 'carbs', label: 'Carbs (g)', field: 'carbs' },
   { name: 'protein', label: 'Protein (g)', field: 'protein' },
-  { name: 'sodium', label: 'Sodium (mg)', field: 'sodium' },
-  { name: 'calcium', label: 'Calcium (%)', field: 'calcium', sortable: true, sort: (a, b) => parseInt(a, 10) - parseInt(b, 10) },
-  { name: 'iron', label: 'Iron (%)', field: 'iron', sortable: true, sort: (a, b) => parseInt(a, 10) - parseInt(b, 10) }
-]
+  { name: 'sodium', label: 'Sodium (mg)', field: 'sodium' }
+  // { name: 'calcium', label: 'Calcium (%)', field: 'calcium', sortable: true, sort: (a, b) => parseInt(a, 10) - parseInt(b, 10) },
+  // { name: 'iron', label: 'Iron (%)', field: 'iron', sortable: true, sort: (a, b) => parseInt(a, 10) - parseInt(b, 10) }
+];
 
-const columns_logs = (() => [
-  { name: 'id', label: 'ID', field: 'id', sortable: true, headerClasses: 'bg-primary1 text-white1' },
-  { name: 'title', label: 'Title', field: 'title', sortable: true },
-])();
-
-export default {
-  name: 'LogsName',
-  data: () => ({
-    items: [],
-    controller: 'logs',
-    v_page: 1,
-    v_perpage: 15,
-    v_totalPages: 1,
-    v_totalCount: 1,
-    c_perPageVariants: [5, 10, 15, 25, 50],
-
-    filter_mode: 'actual',
-
-    columns: columns_logs,
-    data: [
-      {
-        id: 123,
-        title: 'Title',
-      },
-      {
-        id: 222,
-        title: 'Title 2',
-      }
-    ],
-
-    table: {
-      loading: false,
-      // 'rows-per-page-options': this.c_perPageVariants,
-      pagination: {
-
-      }
-    }
-  }),
-
-  watch: {
-    v_perpage(n, o) {
-      LocalStorage.set('v_perpage', n);
-      this.api_get();
-    },
-    v_page(n, o) {
-      this.api_get();
-    },
-
+const columns_logs = [
+  {
+    name: 'id',
+    label: 'ID',
+    field: 'id',
+    sortable: true,
+    headerClasses: 'bg-primary1 text-white1'
   },
+  { name: 'title', label: 'Title', field: 'title', sortable: true }
+];
+
+// export default Vue.extend({
+
+@Component
+export default class LogsPage extends Vue {
+  // name: 'LogsName',
+  // data: () => ({
+  items: Array<LogItem> = [];
+  controller: string = 'logs';
+  v_page: int = 1;
+  v_perpage: int = 15;
+  v_totalPages: int = 1;
+  v_totalCount: int = 1;
+  c_perPageVariants: Array<int> = [5, 10, 15, 25, 50];
+
+  filter_mode: string = 'actual';
+
+  columns: any = columns_logs;
+  data: any = [
+    {
+      id: 123,
+      title: 'Title'
+    },
+    {
+      id: 222,
+      title: 'Title 2'
+    }
+  ];
+
+  table = {
+    loading: false,
+  }
+
+  // }),
+
+  @Watch('v_page')
+  onPageChanged(v: int, old: int) {
+    LocalStorage.set('v_perpage', v);
+  }
+
+  @Watch('v_perpage')
+  onPerPageChanged(v: int, old: int) {
+    LocalStorage.set('v_perpage', v);
+    this.api_get();
+  }
 
   created() {
     console.log(123);
@@ -144,112 +156,110 @@ export default {
     this.v_perpage = LocalStorage.getItem('v_perpage') || 10;
 
     // this.api_get();
-  },
+  }
 
-  methods: {
-    openURL,
+  // methods: {
+  // openURL,
 
-    async api_get() {
-      let link = `${this.controller}/list?page=${this.v_page}&perpage=${this.v_perpage}`;
-      console.log(link);
-      let res = await this.$api.get(link);
+  async api_get() {
+    let link = `${this.controller}/list?page=${this.v_page}&perpage=${this.v_perpage}`;
+    console.log(link);
+    let res = await this.$api.get(link);
 
+    if (res.status == 200 && res.data) {
+      let items = res.data.data;
+      console.log(res.data);
 
-      if (res.status == 200 && res.data) {
+      this.items = clone(items);
+      this.v_totalPages = res.data.totalPages;
+      this.v_totalCount = res.data.totalCount;
 
-        let items = res.data.data;
-        console.log(res.data);
+      return this.items;
+    }
 
-        this.items = clone(items);
-        this.v_totalPages = res.data.totalPages;
-        this.v_totalCount = res.data.totalCount;
+    return false;
+  }
 
-        return this.items;
-      }
+  async data_request(req: any) {
+    // clone()
+  }
 
-      return false;
+  async api_add() {
+    let item = {
+      id: 666,
+      body: 'body',
+      author: 'mdimai666'
+    };
 
-    },
+    let res = await this.$api.post(this.controller, item);
 
+    await this.api_get();
 
+    console.log(res);
+  }
 
-    /**
-     * @param {ReqProp} req
-     */
-    async data_request(req) {
-      clone()
-    },
+  async click_del__reallyDel(id: int) {
+    let res = await this.$api.delete(`${this.controller}/${id}`);
 
-    async api_add() {
-      let item = {
-        id: 666,
-        body: 'body',
-        author: 'mdimai666',
-      }
+    this.items = this.items.filter(s => s.id != id);
 
-      let res = await this.$api.post(this.controller, item);
+    console.log(res);
+  }
 
-      await this.api_get();
+  onItemClick(item: LogItem) {
+    // this.do_mark(item, 'm_link', true);
+    // this.openURL('https://m.vk.com/' + item.link)
+  }
 
-      console.log(res);
+  // async click_del(id: int, _item: LogItem) {
+  //   await this.do_mark(_item, 'deleted', !_item.deleted);
+  // }
+  // async click_spam(id: int, _item: LogItem) {
+  //   await this.do_mark(_item, 'm_spam', !_item.m_spam);
+  // }
+  // async click_link(id: int, _item: LogItem) {
+  //   await this.do_mark(_item, 'm_link', !_item.m_link);
+  // }
 
-    },
+  async do_mark(_item: LogItem, _propName: string, _val: any) {
+    const id = _item.id;
 
-    async click_del__reallyDel(id) {
-      let res = await this.$api.delete(`${this.controller}/${id}`);
+    if (!id) throw new Error('ID required');
 
-      this.items = this.items.filter(s => s.id != id);
+    (_item as any)[_propName] = _val;
 
-      console.log(res);
-    },
+    let patch = [
+      // {op: 'replace', path: '/deleted', value: !_item.deleted},
+      { op: 'replace', path: `/${_propName}`, value: _val }
+    ];
 
-    onItemClick(item) {
-      // this.do_mark(item, 'm_link', true);
-      // this.openURL('https://m.vk.com/' + item.link)
-    },
+    let res = await this.$api.patch(`${this.controller}/${id}`, patch);
 
-    async click_del(id, _item) {
-      await this.do_mark(_item, 'deleted', !_item.deleted);
-    },
-    async click_spam(id, _item) {
-      await this.do_mark(_item, 'm_spam', !_item.m_spam);
-    },
-    async click_link(id, _item) {
-      await this.do_mark(_item, 'm_link', !_item.m_link);
-    },
+    let index = this.items.findIndex(s => s.id != id);
+    let item = res.data;
 
-    async do_mark(_item, _propName, _val) {
+    this.items[index] = clone(item);
 
-      const id = _item.id;
+    console.log('item', res.data);
 
-      if (!id) throw new Error("ID required");
+    this.api_get();
+  }
 
-      _item[_propName] = _val;
-
-      let patch = [
-        // {op: 'replace', path: '/deleted', value: !_item.deleted},
-        { op: 'replace', path: `/${_propName}`, value: _val },
-      ]
-
-      let res = await this.$api.patch(`${this.controller}/${id}`, patch);
-
-      let index = this.items.findIndex(s => s.id != id);
-      let item = res.data;
-
-      this.items[index] = clone(item);
-
-      console.log('item', res.data);
-
-      this.api_get();
-    },
-
-    ///////////////////////////////////////
-
-  },
-
-  computed: {
-
-  },
+  ///////////////////////////////////////
 }
 
+declare interface LogItem {
+  id: int;
+  code: int;
+  source: string;
+  title: string;
+  deleted: bool;
+  checked: bool;
+  body: string;
+  json: string;
+  dt_insert: Date;
+  dt_checked: Date;
+  screenshot: string;
+  uid: string;
+}
 </script>

@@ -34,14 +34,40 @@
   </q-layout>
 </template>
 
-<script>
-export default {
-  name: 'MyLayout',
+<script  lang="ts">
+// Vue
+import Vue from 'vue'
+import Component from 'vue-class-component'
 
-  data () {
-    return {
-      leftDrawerOpen: false
-    }
+// Store modules
+import { getModule } from 'vuex-module-decorators';
+import LayoutStoreModule from './LayoutStoreModule';
+
+// @Component
+// export default class MyLayout extends Vue {
+//   leftDrawerOpen = false;
+// }
+
+@Component
+export default class MyLayout extends Vue {
+  store = getModule(LayoutStoreModule);
+
+  get leftDrawerOpen() {
+    return this.store.leftDrawerOpen;
+  }
+
+  set leftDrawerOpen(value: boolean) {
+    this.store.setLeftDrawerOpen(value);
   }
 }
+
+// export default Vue.extend({
+//   name: 'MyLayout',
+
+//   data () {
+//     return {
+//       leftDrawerOpen: false
+//     }
+//   }
+// })
 </script>

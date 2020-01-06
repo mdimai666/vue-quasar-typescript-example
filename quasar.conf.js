@@ -1,16 +1,27 @@
 // Configuration for your app
 // https://quasar.dev/quasar-cli/quasar-conf-js
 
+
 var path = require('path');
 var fs = require('fs');
 var dotenv = require('dotenv').config();
 
-if(!fs.existsSync('./.env'))
+if (!fs.existsSync('./.env'))
   throw new Error('/.env file not found.\n See .env.example ')
 
 
 module.exports = function (ctx) {
   return {
+    // Quasar looks for *.js files by default
+    sourceFiles: {
+      router: 'src/router/index.ts',
+      store: 'src/store/index.ts'
+    },
+    // Quasar looks for *.js files by default
+    sourceFiles: {
+      router: 'src/router/index.ts',
+      store: 'src/store/index.ts'
+    },
     // app boot file (/src/boot)
     // --> boot files are part of "main.js"
     // https://quasar.dev/quasar-cli/cli-documentation/boot-files
@@ -87,7 +98,7 @@ module.exports = function (ctx) {
       // extractCSS: false,
 
       // https://quasar.dev/quasar-cli/cli-documentation/handling-webpack
-      extendWebpack (cfg) {
+      extendWebpack(cfg) {
       }
     },
 
@@ -189,7 +200,7 @@ module.exports = function (ctx) {
       // More info: https://quasar.dev/quasar-cli/developing-electron-apps/node-integration
       nodeIntegration: true,
 
-      extendWebpack (cfg) {
+      extendWebpack(cfg) {
         // do something with Electron main process Webpack cfg
         // chainWebpack also available besides this extendWebpack
       }
