@@ -1,5 +1,7 @@
+const jsonStringifySafe = require("json-stringify-safe");
+
 export function clone(obj: Object) {
-  return JSON.parse(JSON.stringify(obj));
+  return JSON.parse(jsonStringifySafe(obj));
 }
 
 export function array_move(arr: any[], old_index: number, new_index: number) {
@@ -210,6 +212,10 @@ export function translate_monthNamePrimary(val: string) {
   return (date_map_0 as any)[val] || val;
 }
 
+export function isString(val: any) {
+  return typeof val === 'string' || val instanceof String
+}
+
 export default {
   array_move,
   dynamicSort,
@@ -228,4 +234,5 @@ export default {
   fullUrl,
   // all_childs,
   translate_monthName,
+  isString,
 }

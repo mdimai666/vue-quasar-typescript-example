@@ -12,3 +12,11 @@ export default async ({ app, router, Vue, /*... */ }) => {
   Vue.component('Sidebar1', Sidebar1);
 
 }
+
+// interface Object {
+//   isString(): bool
+// }
+
+// (Object.prototype as any).isString = function () {
+//   return typeof this === 'string' || this instanceof String
+// }

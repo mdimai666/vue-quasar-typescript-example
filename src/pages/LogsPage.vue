@@ -49,7 +49,9 @@ import store, { StoreType } from '../store/index';
 import { Store } from 'vuex';
 import { getModule } from 'vuex-module-decorators';
 import RootStore from '../store/RootStore';
-
+import LogItem from 'src/models/LogItem';
+import { QTableSetup } from 'src/models/QTableSetup';
+import { TableColumn } from '../models/TableColumn';
 
 const columns_sample = [
   // array of Objects
@@ -109,16 +111,26 @@ const columns_sample = [
   // { name: 'iron', label: 'Iron (%)', field: 'iron', sortable: true, sort: (a, b) => parseInt(a, 10) - parseInt(b, 10) }
 ];
 
-const columns_logs = [
-  {
-    name: 'id',
-    label: 'ID',
-    field: 'id',
-    sortable: true,
-    headerClasses: 'bg-primary1 text-white1'
-  },
-  { name: 'title', label: 'Title', field: 'title', sortable: true }
-];
+let columns_logs: TableColumn<LogItem>[];
+// let columns_logs: TableColumns<LogItem> = [
+//   {
+//     name: 'id',
+//     label: 'ID',
+//     field: 'id',
+//     sortable: true,
+//     headerClasses: 'bg-primary1 text-white1'
+//   },
+//   { name: 'title', label: 'Title', field: 'title', sortable: true }
+// ];
+
+const table = new QTableSetup<LogItem>(LogItem, {
+  // includeColumns: /(?!=title)/,
+  // includeColumns: /(dt_)/,
+  // includeColumns: 'id',
+  excludeColumns: 'code,json,source,code,screenshot,uid'
+});
+
+columns_logs = table.Columns();
 
 // export default Vue.extend({
 
@@ -152,11 +164,11 @@ export default class LogsPage extends Vue {
     loading: false
   };
 
-  root = getModule(RootStore, this.$store)
+  root = getModule(RootStore, this.$store);
 
-  c_counter = this.root.get1
+  c_counter = this.root.get1;
 
-  openURL = openURL
+  openURL = openURL;
 
   // }),
 
@@ -172,7 +184,6 @@ export default class LogsPage extends Vue {
   }
 
   created() {
-    console.log(123);
 
     this.v_perpage = LocalStorage.getItem('v_perpage') || 10;
 
@@ -180,14 +191,11 @@ export default class LogsPage extends Vue {
   }
 
   async dd() {
-
-    await this.root.Act1()
-
+    await this.root.Act1();
   }
 
   get count1() {
     return this.$store.state.root.count;
-
   }
 
   // methods: {
@@ -278,20 +286,5 @@ export default class LogsPage extends Vue {
   }
 
   ///////////////////////////////////////
-}
-
-declare interface LogItem {
-  id: int;
-  code: int;
-  source: string;
-  title: string;
-  deleted: bool;
-  checked: bool;
-  body: string;
-  json: string;
-  dt_insert: Date;
-  dt_checked: Date;
-  screenshot: string;
-  uid: string;
 }
 </script>
