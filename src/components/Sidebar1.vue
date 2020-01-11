@@ -33,6 +33,15 @@
         </q-item-section>
       </q-item>
 
+      <q-item to="/itemeditor">
+        <q-item-section avatar>
+          <q-icon name="edit" />
+        </q-item-section>
+        <q-item-section>
+          <q-item-label>Item Editor</q-item-label>
+        </q-item-section>
+      </q-item>
+
 
       <q-separator />
       <q-item-label header>Essential Links</q-item-label>

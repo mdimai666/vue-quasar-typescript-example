@@ -18,13 +18,21 @@ export class TableColumn<TType> {
     public classes: string = ''
     public style: string = ''
     public headerClasses: string = ''
+    public readonly: bool = false
+
+    public type: Function
 
     public op_momentFormat = 'lll'
 
-    constructor(name: string, label: string = '', field: string = '') {
+    constructor(private t: new () => TType, name: string, label: string = '', field: string = '') {
         this.name = name
         this.label = label || name
         this.field = field || name
+
+        // let ins = new t();
+        this.type = t
+        
+        if(this.field == 'id') this.readonly = true;
 
         this.format = this.Format
     }

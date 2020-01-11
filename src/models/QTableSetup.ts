@@ -1,12 +1,13 @@
 import instance from 'src/boot/api';
 import { TableColumn } from './TableColumn';
 import { isString } from 'src/js/functions1';
+import { GetIMetaFieldType } from './LogItem';
 
 //TODO: Add decorator
 
 export class QTableSetup<T> {
 
-    private columns: TableColumn<unknown>[] = []
+    private columns: TableColumn<any>[] = []
 
     public options: QTableSetup_Options
 
@@ -37,7 +38,9 @@ export class QTableSetup<T> {
                 // let typeName: string = GetTypeName(f)
                 // let fieldType: Type = ThisType<f>;
 
-                let col = new TableColumn<unknown>(field)
+                // let col = new TableColumn<InstanceType>(t, field)
+                let cnstcr : Function | null = GetIMetaFieldType(t, field);
+                let col = new TableColumn<any>(cnstcr as any, field)
 
                 this.columns.push(col)
             }
@@ -46,7 +49,7 @@ export class QTableSetup<T> {
 
     }
 
-    public Columns(): TableColumn<T>[] {
+    public Columns(): TableColumn<any>[] {
         return this.columns.filter(col => this.options.ColIsShow(col.name))
     }
 
