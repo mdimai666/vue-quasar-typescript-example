@@ -235,7 +235,6 @@ import { trimSlash, clone } from '../js/functions1';
 import Component from 'vue-class-component';
 import { Watch, Provide } from 'vue-property-decorator';
 
-
 @Component
 // export default class LogsPage extends Vue implements Vue {
 export default class LogsPage extends Vue {

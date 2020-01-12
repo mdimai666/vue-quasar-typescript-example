@@ -61,6 +61,10 @@ export function TimeSince(date: Date) {
     return moment(date).fromNow();
 }
 
+export function MomentFormat(date: Date, format = 'lll'){
+    return moment(date).format(format)
+}
+
 export default {
     AsDateTime,
     AsDate,
@@ -69,4 +73,5 @@ export default {
     AsCalendar,
     BackendUrl,
     TimeSince,
+    moment: MomentFormat
 }

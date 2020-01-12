@@ -1,7 +1,7 @@
 import axios from 'axios'
 import { fullUrl } from './../js/functions1'
 
-export const instance = axios.create({
+const instance = axios.create({
   // withCredentials: true,
 });
 

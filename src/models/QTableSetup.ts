@@ -1,7 +1,7 @@
 import instance from 'src/boot/api';
 import { TableColumn } from './TableColumn';
 import { isString } from 'src/js/functions1';
-import { GetIMetaFieldType } from './LogItem';
+import { GetIMetaFieldType } from 'src/class/QMeta';
 
 //TODO: Add decorator
 
