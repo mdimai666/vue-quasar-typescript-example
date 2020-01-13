@@ -214,6 +214,16 @@ const table = new QTableSetup<LogItem>(LogItem, {
 
 table.columns.push(new TableColumn<String>(String, 'tools'))
 
+function SET(name: string, f: (a: any) => void) {
+  let z = table.columns.find(s => s!.name == name)
+  // z!.align = 'left'
+  f(z)
+}
+
+// SET('id', s => s.align = 'left')
+// SET('title', s => s.align = 'left')
+
+
 columns_logs = table.Columns()
 
 // export default Vue.extend({
@@ -415,9 +425,7 @@ export default class LogsPage extends Vue {
     this.v_loading = true
 
     {
-      const returnedData = await this.$backend.logs.list(
-        this.AsRequestParam(props)
-      )
+      const returnedData = await this.$backend.logs.list(this.AsRequestParam(props))
 
       if (returnedData) {
         this.items = returnedData.data
@@ -528,4 +536,5 @@ form /deep/ {
     }
   }
 }
+
 </style>

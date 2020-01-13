@@ -47,7 +47,7 @@
         <q-item-section avatar @click.native="onItemClick(item)">
           <q-avatar>
             <img
-              :src="get_src_gromImgHtml(item.screenshot)"
+              :src="get_src_fromImgHtml(item.screenshot)"
               placeholder-src="statics/app-logo-128x128.png"
             />
           </q-avatar>
@@ -100,6 +100,16 @@
                 </q-list>
               </q-menu>
             </q-btn>
+
+            <!-- copy -->
+            <q-btn
+              class="gt-xs1"
+              label="COPY"
+              flat
+              dense
+              icon="file_copy"
+              @click="click_copy(item)"
+            />
 
             <!-- spam -->
             <q-btn
@@ -230,7 +240,7 @@
 <script  lang="ts">
 import Vue from 'vue'
 
-import { LocalStorage, openURL } from 'quasar'
+import { LocalStorage, openURL, copyToClipboard } from 'quasar'
 import { trimSlash, clone } from '../js/functions1'
 import Component from 'vue-class-component'
 import { Watch, Provide } from 'vue-property-decorator'
@@ -284,14 +294,14 @@ export default class LogsPage extends Vue {
   }
 
   // openURL = (url) =  => openU,
-  // methods: {
+  copyToClipboard = copyToClipboard
 
   async api_get() {
-    let link = `${this.controller}/list?page=${this.v_page}&perpage=${
-      this.v_perpage
-      }${this.get_modeAsQueryString()}`
+    let link = `${this.controller}/list?page=${this.v_page}&perpage=${this.v_perpage}${this.get_modeAsQueryString()}`
     console.log(link)
     let res = await this.$api.get(link)
+
+    this.$backend
 
     if (res.status == 200 && res.data) {
       let items = res.data.data
@@ -340,6 +350,12 @@ export default class LogsPage extends Vue {
   }
   async click_link(id: int, _item: JobItem) {
     await this.do_mark(_item, 'm_link', !_item.m_link)
+  }
+
+  click_copy(item: JobItem){
+    this.copyToClipboard(item.body)
+    this.$q.notify('copied')
+
   }
 
   async do_mark(_item: JobItem, _propName: string, _val: any) {
@@ -407,7 +423,7 @@ export default class LogsPage extends Vue {
     return `&${get_modeAsQueryString()}&`
   }
 
-  get_src_gromImgHtml(imgHtml: string) {
+  get_src_fromImgHtml(imgHtml: string) {
     const def = 'statics/empty-photo.jpg'
 
     if (!imgHtml) return def
