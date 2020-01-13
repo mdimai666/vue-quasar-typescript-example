@@ -1,0 +1,30 @@
+{
+  "vetur.format.defaultFormatter.html": "prettier",
+  "vetur.format.defaultFormatter.js": "vscode-typescript",
+  "vetur.format.defaultFormatter.ts": "vscode-typescript",
+  "files.watcherExclude": {
+    "dist": true
+  },
+  "files.exclude": {
+    "dist": true
+  },
+  "vetur.experimental.templateInterpolationService": true,
+  "vetur.validation.template": false,
+  "eslint.validate": [
+    "javascript",
+    "javascriptreact",
+    "typescript",
+    {
+      "language": "vue",
+      "autoFix": true
+    },
+    "javascript",
+    "javascriptreact",
+    "typescript",
+    {
+      "language": "vue",
+      "autoFix": true
+    }
+  ],
+  "typescript.format.semicolons": "remove"
+}
