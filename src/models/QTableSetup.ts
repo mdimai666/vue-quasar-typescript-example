@@ -1,13 +1,13 @@
-import instance from 'src/boot/api';
-import { TableColumn } from './TableColumn';
-import { isString } from 'src/js/functions1';
-import { GetIMetaFieldType } from 'src/class/QMeta';
+import instance from 'src/boot/api'
+import { TableColumn } from './TableColumn'
+import { isString } from 'src/js/functions1'
+import { GetIMetaFieldType } from 'src/class/QMeta'
 
 //TODO: Add decorator
 
 export class QTableSetup<T> {
 
-    public columns: TableColumn<any>[] = []
+    columns: TableColumn<any>[] = []
 
     public options: QTableSetup_Options
 
@@ -15,21 +15,20 @@ export class QTableSetup<T> {
         public _options: Partial<QTableSetup_Options> = new QTableSetup_Options()
     ) {
 
-        this.options = new QTableSetup_Options(_options);
+        this.options = new QTableSetup_Options(_options)
 
         //append not setters fields
         // this.options = {...new QTableSetup_Options(), ...this.options}
 
-        let instance = new t();
+        let instance = new t()
         let fields: string[] = Object.keys(instance)
 
 
         for (let field of fields) {
 
-
             let index = this.columns.findIndex(s => s.field == field)
 
-            let noExist: bool = index < 0;
+            let noExist: bool = index < 0
 
             if (noExist) {
 
@@ -39,7 +38,7 @@ export class QTableSetup<T> {
                 // let fieldType: Type = ThisType<f>;
 
                 // let col = new TableColumn<InstanceType>(t, field)
-                let cnstcr : Function | null = GetIMetaFieldType(t, field);
+                let cnstcr: Function | null = GetIMetaFieldType(t, field)
                 let col = new TableColumn<any>(cnstcr as any, field)
 
                 this.columns.push(col)
@@ -60,10 +59,10 @@ export function GetTypeName(obj: any) {
     let typeName: string = typeof f
 
     if (f instanceof Date)
-        typeName = f.constructor.name;
+        typeName = f.constructor.name
 
     else if (f instanceof Array)
-        typeName = f.constructor.name;
+        typeName = f.constructor.name
     // typeName = f.constructor.name + '<' + GetTypeName(f[0]) + '>';
 
     return typeName

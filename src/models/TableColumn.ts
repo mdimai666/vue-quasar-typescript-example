@@ -1,12 +1,12 @@
 import moment from 'moment'
 import { date } from 'quasar'
-import { IMeta, GetIMeta, IOption } from 'src/class/QMeta';
-import { SDropdown, SRadio, SCheckboxes } from 'src/class/QDecorators';
+import { IMeta, GetIMeta, IOption } from 'src/class/QMeta'
+import { SDropdown, SRadio, SCheckboxes } from 'src/class/QDecorators'
 
 const sampleOfDate = '2020-01-07T01:39:17.987612+09:00'
 //   '2020-01-09T01:50:47.78666+09:00'
 
-const validDateLength = sampleOfDate.length - 6;
+const validDateLength = sampleOfDate.length - 6
 
 export class TableColumn<TType> {
     public name: string
@@ -14,7 +14,7 @@ export class TableColumn<TType> {
     public label: string
     public align: 'left' | 'right' | 'center' = 'right'
     public field: string
-    public format: (val: TType) => string;
+    public format: (val: TType) => string
     public sortable: bool = true
     public sort: (a: TType, b: TType) => int = (a, b) => parseInt(a as any, 10) - parseInt(b as any, 10)
     public classes: string = ''
@@ -40,14 +40,14 @@ export class TableColumn<TType> {
         // let ins = new t();
         this.type = t
 
-        let readOnly: bool = false;
-        let hidden: bool = false;
-        let m_istextarea: bool = false;
+        let readOnly: bool = false
+        let hidden: bool = false
+        let m_istextarea: bool = false
 
-        let qmeta: IMeta | null = null;
+        let qmeta: IMeta | null = null
 
         if (modelType) {
-            qmeta = GetIMeta(modelType);
+            qmeta = GetIMeta(modelType)
         }
 
         if (qmeta) {
@@ -55,10 +55,10 @@ export class TableColumn<TType> {
             hidden = qmeta.hiddenList && qmeta.hiddenList[this.field]
             m_istextarea = qmeta.textareaList && qmeta.textareaList[this.field]
 
-            let typeName: string;
+            let typeName: string
 
             if (qmeta.mapFieldTypeList[this.field]) {
-                typeName = qmeta.mapFieldTypeList[this.field].name;
+                typeName = qmeta.mapFieldTypeList[this.field].name
 
                 const optionedListTypes: string[] = [SDropdown.name, SRadio.name, SCheckboxes.name]
 
@@ -79,7 +79,9 @@ export class TableColumn<TType> {
 
     public Format(val: TType): string {
 
-        if (this.IsValidDate(val)) {
+        if (typeof val === 'boolean') {
+            return val ? '✅' : '⬜'
+        } else if (this.IsValidDate(val)) {
             return moment(val).format(this.op_momentFormat)
         } else {
             return val as any

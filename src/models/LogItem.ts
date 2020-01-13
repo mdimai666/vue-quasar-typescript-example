@@ -33,6 +33,7 @@ export class LogItem implements ILogItem {
     public dt_insert: Date = new Date(0);
     public dt_checked: Date = new Date(0);
     @FImage
+    @FHidden
     public screenshot: string = '';
     // @FHidden
     @FReadOnly

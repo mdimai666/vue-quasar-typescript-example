@@ -467,6 +467,10 @@ export default class LogsPage extends Vue {
     this.$q.loading.show({ delay: 100 })
     try {
       let newItem = await this.$backend.logs.patch(e.id, e)
+
+      let index = this.items.findIndex(s => s.id == newItem.id);
+      this.items[index] = newItem
+
       this.show_modal = false
     } catch (error) {
       this.$q.notify({ message: error.toString(), color: 'red' })
