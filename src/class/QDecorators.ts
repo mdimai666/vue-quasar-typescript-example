@@ -27,6 +27,14 @@ export function FHidden(target: Object, propertyKey: string | symbol): void {
     qmeta.hiddenList[propertyKey.toString()] = true
 }
 
+export function FTextarea(target: Object, propertyKey: string | symbol): void {
+    let proto = (target as any).constructor;
+    if (!proto.qmeta) proto.qmeta = new QMeta()
+
+    let qmeta: IMeta = proto.qmeta;
+    qmeta.textareaList[propertyKey.toString()] = true
+}
+
 export function FImage(target: Object, propertyKey: string | symbol): void {
     let proto = (target as any).constructor;
     if (!proto.qmeta) proto.qmeta = new QMeta()

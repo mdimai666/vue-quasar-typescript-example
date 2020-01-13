@@ -1,101 +1,101 @@
-const jsonStringifySafe = require("json-stringify-safe");
+const jsonStringifySafe = require("json-stringify-safe")
 
 export function clone(obj: Object) {
-  return JSON.parse(jsonStringifySafe(obj));
+  return JSON.parse(jsonStringifySafe(obj))
 }
 
 export function array_move(arr: any[], old_index: number, new_index: number) {
 
   if (new_index >= arr.length) {
-    var k = new_index - arr.length + 1;
+    var k = new_index - arr.length + 1
     while (k--) {
-      arr.push(undefined);
+      arr.push(undefined)
     }
   }
-  arr.splice(new_index, 0, arr.splice(old_index, 1)[0]);
-  return arr; // for testing
+  arr.splice(new_index, 0, arr.splice(old_index, 1)[0])
+  return arr // for testing
 };
 
 export function dynamicSort(property: string) {
-  var sortOrder = 1;
+  var sortOrder = 1
   if (property[0] === "-") {
-    sortOrder = -1;
-    property = property.substr(1);
+    sortOrder = -1
+    property = property.substr(1)
   }
   return function (a: any, b: any) {
-    var result = (a[property] < b[property]) ? -1 : (a[property] > b[property]) ? 1 : 0;
-    return result * sortOrder;
+    var result = (a[property] < b[property]) ? -1 : (a[property] > b[property]) ? 1 : 0
+    return result * sortOrder
   }
 }
 
 export function downloadObjectAsJson(exportObj: object, exportName: string) {
-  var json = JSON.stringify(exportObj);
+  var json = JSON.stringify(exportObj)
   if (exportName.indexOf('json') === -1)
-    exportName += '.json';
-  download(json, exportName, 'text/json');
+    exportName += '.json'
+  download(json, exportName, 'text/json')
 }
 
 export function downloadStringAsXML(string: string, exportName: string) {
-  var json = (string);
+  var json = (string)
   if (exportName.indexOf('xml') === -1)
-    exportName += '.xml';
-  download(json, exportName, 'text/xml');
+    exportName += '.xml'
+  download(json, exportName, 'text/xml')
 }
 
 export function download(text: string, name: string, type: string) {
   var file = new Blob([text], {
     type: type
-  });
-  var isIE = /*@cc_on!@*/ false || !!(document as any).documentMode;
+  })
+  var isIE = /*@cc_on!@*/ false || !!(document as any).documentMode
   if (isIE) {
-    window.navigator.msSaveOrOpenBlob(file, name);
+    window.navigator.msSaveOrOpenBlob(file, name)
   } else {
-    var a = document.createElement('a');
-    a.href = URL.createObjectURL(file);
-    a.download = name;
-    a.click();
+    var a = document.createElement('a')
+    a.href = URL.createObjectURL(file)
+    a.download = name
+    a.click()
   }
 }
 
 export function findGetParameter(parameterName: string) {
   var result = null,
-    tmp = [];
+    tmp = []
   location.search
     .substr(1)
     .split("&")
     .forEach(function (item) {
-      tmp = item.split("=");
-      if (tmp[0] === parameterName) result = decodeURIComponent(tmp[1]);
-    });
-  return result;
+      tmp = item.split("=")
+      if (tmp[0] === parameterName) result = decodeURIComponent(tmp[1])
+    })
+  return result
 }
 
 export function onlyUnique(value: any, index: number, self: any) {
-  return self.indexOf(value) === index;
+  return self.indexOf(value) === index
 }
 
 export function randomdColor() {
   var hex = '0123456789ABCDEF'.split(''),
     color = '#',
-    i;
+    i
   for (i = 0; i < 6; i++) {
-    color = color + hex[Math.floor(Math.random() * 16)];
+    color = color + hex[Math.floor(Math.random() * 16)]
   }
-  return color;
+  return color
 }
 
 export function removeNonWords(st: string) {
-  var s = st.replace(/[^\wа-я]+/ig, '');
-  return s;
+  var s = st.replace(/[^\wа-я]+/ig, '')
+  return s
 }
 
 export function removeNonWords2(st: string) {
-  var s = st.replace(/[^\wа-я\-\_\.]+/ig, '');
-  return s;
+  var s = st.replace(/[^\wа-я\-\_\.]+/ig, '')
+  return s
 }
 
 export function forwardSlash(str: string) {
-  return (str || '').replace(/\\/g, '/');
+  return (str || '').replace(/\\/g, '/')
 }
 
 /**
@@ -104,31 +104,31 @@ export function forwardSlash(str: string) {
  * {0: value1, 1: value 2}
  */
 export function toObjectArray(arr: any[]) {
-  var rv: any = {};
+  var rv: any = {}
   for (var i = 0; i < arr.length; ++i)
-    rv[i] = arr[i];
-  return rv;
+    rv[i] = arr[i]
+  return rv
 }
 
 export function trimSlash(str: string) {
-  return (str || '').replace(/^\/|\/$/g, "");
+  return (str || '').replace(/^\/|\/$/g, "")
 };
 
 export function urlJoin() {
-  var p = [];
+  var p = []
   for (var i = 0; i < arguments.length; i++) {
-    var path = arguments[i];
-    path = trimSlash(forwardSlash(path));
-    p.push(path);
+    var path = arguments[i]
+    path = trimSlash(forwardSlash(path))
+    p.push(path)
   }
 
   return trimSlash(p.join('/'));;
 }
 
 export function fullUrl(...params: string[]) {
-  let h = urlJoin.apply(null, params as any);
-  if (h.indexOf('http') < 0) (h as any) = "//" + h;
-  return h;
+  let h = urlJoin.apply(null, params as any)
+  if (h.indexOf('http') < 0) (h as any) = "//" + h
+  return h
 }
 
 // export function all_childs(arr: any[], id: number | number[], prop_parent_id: string, __maxDepth = 15) {
@@ -197,7 +197,7 @@ let date_map = {
   'October': 'Октября',
   'November': 'Ноября',
   'December': 'Декабря',
-};
+}
 
 /**
  * Replace month name string
@@ -205,11 +205,11 @@ let date_map = {
  * @returns {String}
  */
 export function translate_monthName(val: string) {
-  return (date_map as any)[val] || val;
+  return (date_map as any)[val] || val
 }
 
 export function translate_monthNamePrimary(val: string) {
-  return (date_map_0 as any)[val] || val;
+  return (date_map_0 as any)[val] || val
 }
 
 export function isString(val: any) {

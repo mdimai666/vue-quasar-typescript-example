@@ -7,7 +7,7 @@ import { GetIMetaFieldType } from 'src/class/QMeta';
 
 export class QTableSetup<T> {
 
-    private columns: TableColumn<any>[] = []
+    public columns: TableColumn<any>[] = []
 
     public options: QTableSetup_Options
 

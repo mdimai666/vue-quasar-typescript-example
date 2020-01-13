@@ -1,5 +1,5 @@
 import { IMeta, QMeta, AppendQMeta } from 'src/class/QMeta';
-import { FieldType, FReadOnly, FImage, FDropdown, FRadio, FCheckboxes, FHidden } from 'src/class/QDecorators';
+import { FieldType, FReadOnly, FImage, FDropdown, FRadio, FCheckboxes, FHidden, FTextarea } from 'src/class/QDecorators';
 
 export interface ILogItem {
     id: int;
@@ -26,14 +26,16 @@ export class LogItem implements ILogItem {
     public title: string = '';
     public deleted: boolean = false;
     public checked: boolean = false;
+    @FTextarea
     public body: string = '';
     public json: string = '';
     @FReadOnly
-    public dt_insert: Date = new Date;
-    public dt_checked: Date = new Date;
+    public dt_insert: Date = new Date(0);
+    public dt_checked: Date = new Date(0);
     @FImage
     public screenshot: string = '';
-    @FHidden
+    // @FHidden
+    @FReadOnly
     public uid: string = '';
 
     // @FDropdown(['dima', 'vasya'])

@@ -7,30 +7,30 @@
 </template>
 
 <script  lang="ts">
-import Vue from 'vue';
-import { openURL, LocalStorage, uid } from 'quasar';
-import Component from 'vue-class-component';
-import { Watch } from 'vue-property-decorator';
-import { clone } from 'src/js/functions1';
-import store, { StoreType } from '../store/index';
-import { Store } from 'vuex';
-import { getModule } from 'vuex-module-decorators';
-import RootStore from '../store/RootStore';
-import { QTableSetup } from 'src/models/QTableSetup';
-import { TableColumn } from '../models/TableColumn';
-import moment from 'moment';
-import { LogItem } from 'src/models/LogItem';
-import { GetIMetaFieldType } from 'src/class/QMeta';
+import Vue from 'vue'
+import { openURL, LocalStorage, uid } from 'quasar'
+import Component from 'vue-class-component'
+import { Watch } from 'vue-property-decorator'
+import { clone } from 'src/js/functions1'
+import store, { StoreType } from '../store/index'
+import { Store } from 'vuex'
+import { getModule } from 'vuex-module-decorators'
+import RootStore from '../store/RootStore'
+import { QTableSetup } from 'src/models/QTableSetup'
+import { TableColumn } from '../models/TableColumn'
+import moment from 'moment'
+import { LogItem } from 'src/models/LogItem'
+import { GetIMetaFieldType } from 'src/class/QMeta'
 
 @Component
 export default class ItemEditorPage extends Vue {
-  item: LogItem;
+  item: LogItem
 
   constructor() {
-    super();
+    super()
 
     this.item = new LogItem({
-    // this.item = ({
+      // this.item = ({
       id: 123,
       code: 123,
       source: 'source',
@@ -43,20 +43,20 @@ export default class ItemEditorPage extends Vue {
       dt_checked: new Date(),
       screenshot: 'http://localhost:8080/img/quasar-logo-full.svg',
       uid: uid()
-    });
+    })
 
-    console.dir(LogItem);
+    console.dir(LogItem)
 
-    // console.warn(this.m_fields);
+    // console.warn(this.m_fields)
   }
 
-  root = getModule(RootStore, this.$store);
+  root = getModule(RootStore, this.$store)
 
   ////////////////////////////////////////
 
   submit() {
-    // console.warn('123', item);
-    console.warn('123', this.item);
+    // console.warn('123', item)
+    console.warn('123', this.item)
 
   }
 

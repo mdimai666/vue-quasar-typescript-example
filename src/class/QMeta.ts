@@ -7,14 +7,16 @@ export interface IMeta {
     mapFieldTypeList: any
     readOnlyList: any
     hiddenList: any
-    optionList: { [key:string]: IOption[] }
+    optionList: { [key: string]: IOption[] }
+    textareaList: any
 }
 
 export class QMeta implements IMeta {
     public mapFieldTypeList: any = {}
     public readOnlyList: any = {}
     public hiddenList: any = {}
-    public optionList: { [key:string]: IOption[] } = {}
+    public optionList: { [key: string]: IOption[] } = {}
+    textareaList: any = {}
 
     constructor() {
 

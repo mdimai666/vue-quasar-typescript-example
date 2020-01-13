@@ -21,7 +21,7 @@ export function AsDate(value: Date): string {
 
 export function BackendUrl(value: string): string {
     if (!value) return value
-    return (api as any).fullUrl(value);
+    return (api as any).fullUrl(value)
 }
 
 export function AsCalendar(value: Date): string {
@@ -41,27 +41,27 @@ export function AsCalendar(value: Date): string {
 }
 
 export function FileSize(bytes: number, si: boolean): string {
-    var thresh = si ? 1000 : 1024;
+    var thresh = si ? 1000 : 1024
     if (Math.abs(bytes) < thresh) {
-        return bytes + ' B';
+        return bytes + ' B'
     }
     var units = si
         ? ['kB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB']
-        : ['KiB', 'MiB', 'GiB', 'TiB', 'PiB', 'EiB', 'ZiB', 'YiB'];
-    var u = -1;
+        : ['KiB', 'MiB', 'GiB', 'TiB', 'PiB', 'EiB', 'ZiB', 'YiB']
+    var u = -1
     do {
-        bytes /= thresh;
-        ++u;
-    } while (Math.abs(bytes) >= thresh && u < units.length - 1);
-    return bytes.toFixed(1) + ' ' + units[u];
+        bytes /= thresh
+        ++u
+    } while (Math.abs(bytes) >= thresh && u < units.length - 1)
+    return bytes.toFixed(1) + ' ' + units[u]
 }
 
 export function TimeSince(date: Date) {
-    if (!date) return date;
-    return moment(date).fromNow();
+    if (!date) return date
+    return moment(date).fromNow()
 }
 
-export function MomentFormat(date: Date, format = 'lll'){
+export function MomentFormat(date: Date, format = 'lll') {
     return moment(date).format(format)
 }
 

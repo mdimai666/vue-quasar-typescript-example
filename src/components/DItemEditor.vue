@@ -24,8 +24,13 @@
         ]"
       /> -->
     <!-- <q-toggle v-model="accept" label="I accept the license and terms" /> -->
-    <div class="content">
-      <div v-for="field in fields" :key="field.name" class="q-mb-md">
+    <div class="row">
+      <div
+        v-for="field in fields"
+        :key="field.name"
+        class="q-mb-md col-12 field"
+        :class="['field--' + field.name]"
+      >
         <template v-if="!field.hidden">
           <template v-if="!field.readonly">
             <!-- Number -->
@@ -184,6 +189,7 @@
             <q-input
               v-else
               :dense="dense"
+              :type="field.m_istextarea ? 'textarea' : 'text'"
               outlined
               stack-label
               v-model="model[field.field]"
@@ -232,88 +238,91 @@
         </template>
       </div>
     </div>
-    <div>
-      <q-btn label="Submit" type="submit" color="primary" />
+    <div class="text-right" v-if="showsubmit">
       <q-btn label="Reset" type="reset" color="primary" flat class="q-ml-sm" />
+      <q-btn label="Submit" type="submit" color="primary" />
     </div>
   </q-form>
 </template>
 
 <script  lang="ts">
-import Vue from 'vue';
-import Component from 'vue-class-component';
-import { Watch, Prop, Model, Emit, PropSync } from 'vue-property-decorator';
-import { TableColumn } from 'src/models/TableColumn';
-import { clone } from 'src/js/functions1';
-import { GetIMetaFieldType } from 'src/class/QMeta';
+import Vue from 'vue'
+import Component from 'vue-class-component'
+import { Watch, Prop, Model, Emit, PropSync } from 'vue-property-decorator'
+import { TableColumn } from 'src/models/TableColumn'
+import { clone } from 'src/js/functions1'
+import { GetIMetaFieldType } from 'src/class/QMeta'
 
 @Component
 export default class DItemEditor extends Vue {
   @Model('change', { required: true })
-  readonly model: any | undefined;
+  readonly model: any | undefined
 
-  @Prop({default: false})
-  readonly dense: bool | string | any;
+  @Prop({ default: false })
+  readonly dense: bool | string | any
 
-  @Prop({default: false})
-  readonly debug: bool | string | any;
+  @Prop({ default: false })
+  readonly debug: bool | string | any
 
-  private type: Type;
+  @Prop({ default: true })
+  readonly showsubmit: bool | string | any
 
-  m_fields: TableColumn<unknown>[];
+  private type: Type
 
-  public errored: bool = false;
-  error_message: string = '';
+  m_fields: TableColumn<unknown>[]
+
+  public errored: bool = false
+  error_message: string = ''
 
   constructor() {
-    super();
-    this.m_fields = [];
+    super()
+    this.m_fields = []
 
     let isValid =
-      this.model.constructor && this.model.constructor.name == 'Object';
+      this.model.constructor && this.model.constructor.name == 'Object'
 
     if (isValid) {
-      this.errored = true;
-      // throw new Error('Model must me Class Instance');
-      this.error_message = 'Model must be Class Instance';
-      console.error(this.error_message);
+      this.errored = true
+      // throw new Error('Model must me Class Instance')
+      this.error_message = 'Model must be Class Instance'
+      console.error(this.error_message)
     }
 
-    this.type = this.model.constructor;
+    this.type = this.model.constructor
 
-    let T = this.type;
+    let T = this.type
 
-    let instance = new (T as any)();
-    let fields: string[] = Object.keys(instance);
+    let instance = new (T as any)()
+    let fields: string[] = Object.keys(instance)
 
     for (let field of fields) {
-      // let index = this.columns.findIndex(s => s.field == field);
+      // let index = this.columns.findIndex(s => s.field == field)
 
       // let f = (instance as any)[field]
       // console.warn('T.' + field, GetTypeName(f))
       // let typeName: string = GetTypeName(f)
-      // let fieldType: Type = ThisType<f>;
+      // let fieldType: Type = ThisType<f>
 
-      let qmetaType: Function | null = GetIMetaFieldType(T, field);
-      // console.warn('qmeta-' + field, qmetaType);
-      // console.warn('as',qmeta.mapFieldTypeList.get(field));
-      let constcr: Function = qmetaType ? qmetaType : String;
-      let col = new TableColumn<any>(constcr as any, field, field, field, T);
+      let qmetaType: Function | null = GetIMetaFieldType(T, field)
+      // console.warn('qmeta-' + field, qmetaType)
+      // console.warn('as',qmeta.mapFieldTypeList.get(field))
+      let constcr: Function = qmetaType ? qmetaType : String
+      let col = new TableColumn<any>(constcr as any, field, field, field, T)
 
-      this.m_fields.push(col);
+      this.m_fields.push(col)
     }
   }
 
   get fields(): TableColumn<unknown>[] {
-    return this.m_fields ? this.m_fields : [];
+    return this.m_fields ? this.m_fields : []
   }
 
-  onReset() {}
+  onReset() { }
 
   @Emit('submit')
   onSubmit() {
     // if (this.model) {
-    //   console.warn(clone(this.model));
+    //   console.warn(clone(this.model))
     // }
   }
 }

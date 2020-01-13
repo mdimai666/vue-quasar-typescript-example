@@ -228,12 +228,13 @@
 </template>
 
 <script  lang="ts">
-import Vue from 'vue';
+import Vue from 'vue'
 
-import { LocalStorage, openURL } from 'quasar';
-import { trimSlash, clone } from '../js/functions1';
-import Component from 'vue-class-component';
-import { Watch, Provide } from 'vue-property-decorator';
+import { LocalStorage, openURL } from 'quasar'
+import { trimSlash, clone } from '../js/functions1'
+import Component from 'vue-class-component'
+import { Watch, Provide } from 'vue-property-decorator'
+import { JobItem } from '../models/JobItem'
 
 @Component
 // export default class LogsPage extends Vue implements Vue {
@@ -241,45 +242,45 @@ export default class LogsPage extends Vue {
   // export default Vue.extend({
   // name: 'PageApi',
   // data: () => ({
-  items: JobItem[] = [];
-  controller: string = 'jobs';
-  v_page: int = 1;
-  v_perpage: int = 15;
-  v_totalPages: int = 1;
-  v_totalCount: int = 1;
-  c_perPageVariants: int[] = [5, 10, 15, 25, 50];
+  items: JobItem[] = []
+  controller: string = 'jobs'
+  v_page: int = 1
+  v_perpage: int = 15
+  v_totalPages: int = 1
+  v_totalCount: int = 1
+  c_perPageVariants: int[] = [5, 10, 15, 25, 50]
 
-  filter_mode: string = 'actual';
+  filter_mode: string = 'actual'
   // }),
 
   // watch: {
   //   v_perpage(n:int, o:int) {
-  //     LocalStorage.set('v_perpage', n);
-  //     this.api_get();
+  //     LocalStorage.set('v_perpage', n)
+  //     this.api_get()
   //   },
   //   v_page(n, o) {
-  //     this.api_get();
+  //     this.api_get()
   //   },
 
   // }
 
   @Watch('v_page')
   onPageChanged(v: int, old: int) {
-    LocalStorage.set('v_perpage', v);
+    LocalStorage.set('v_perpage', v)
   }
 
   @Watch('v_perpage')
   onPerPageChanged(v: int, old: int) {
-    LocalStorage.set('v_perpage', v);
-    this.api_get();
+    LocalStorage.set('v_perpage', v)
+    this.api_get()
   }
 
   created() {
-    console.log(123);
+    console.log(123)
 
-    this.v_perpage = LocalStorage.getItem('v_perpage') || 10;
+    this.v_perpage = LocalStorage.getItem('v_perpage') || 10
 
-    this.api_get();
+    this.api_get()
   }
 
   // openURL = (url) =  => openU,
@@ -288,22 +289,22 @@ export default class LogsPage extends Vue {
   async api_get() {
     let link = `${this.controller}/list?page=${this.v_page}&perpage=${
       this.v_perpage
-    }${this.get_modeAsQueryString()}`;
-    console.log(link);
-    let res = await this.$api.get(link);
+      }${this.get_modeAsQueryString()}`
+    console.log(link)
+    let res = await this.$api.get(link)
 
     if (res.status == 200 && res.data) {
-      let items = res.data.data;
-      console.log(res.data);
+      let items = res.data.data
+      console.log(res.data)
 
-      this.items = clone(items);
-      this.v_totalPages = res.data.totalPages;
-      this.v_totalCount = res.data.totalCount;
+      this.items = clone(items)
+      this.v_totalPages = res.data.totalPages
+      this.v_totalCount = res.data.totalCount
 
-      return this.items;
+      return this.items
     }
 
-    return false;
+    return false
   }
 
   async api_add() {
@@ -311,151 +312,135 @@ export default class LogsPage extends Vue {
       id: 666,
       body: 'body',
       author: 'mdimai666'
-    };
+    }
 
-    let res = await this.$api.post(this.controller, item);
+    let res = await this.$api.post(this.controller, item)
 
-    console.log(res);
+    console.log(res)
   }
 
   async click_del__reallyDel(id: int) {
-    let res = await this.$api.delete(`${this.controller}/${id}`);
+    let res = await this.$api.delete(`${this.controller}/${id}`)
 
-    this.items = this.items.filter(s => s.id != id);
+    this.items = this.items.filter(s => s.id != id)
 
-    console.log(res);
+    console.log(res)
   }
 
   onItemClick(item: JobItem) {
-    this.do_mark(item, 'm_link', true);
-    openURL('https://m.vk.com/' + item.link);
+    this.do_mark(item, 'm_link', true)
+    openURL('https://m.vk.com/' + item.link)
   }
 
   async click_del(id: int, _item: JobItem) {
-    await this.do_mark(_item, 'deleted', !_item.deleted);
+    await this.do_mark(_item, 'deleted', !_item.deleted)
   }
   async click_spam(id: int, _item: JobItem) {
-    await this.do_mark(_item, 'm_spam', !_item.m_spam);
+    await this.do_mark(_item, 'm_spam', !_item.m_spam)
   }
   async click_link(id: int, _item: JobItem) {
-    await this.do_mark(_item, 'm_link', !_item.m_link);
+    await this.do_mark(_item, 'm_link', !_item.m_link)
   }
 
   async do_mark(_item: JobItem, _propName: string, _val: any) {
-    const id = _item.id;
+    const id = _item.id
 
-    if (!id) throw new Error('ID required');
+    if (!id) {
+      throw new Error('ID required')
+    }
 
-    (_item as any)[_propName] = _val;
+    (_item as any)[_propName] = _val
 
     let patch = [
       // {op: 'replace', path: '/deleted', value: !_item.deleted},
       { op: 'replace', path: `/${_propName}`, value: _val }
-    ];
+    ]
 
-    let res = await this.$api.patch(`${this.controller}/${id}`, patch);
+    let res = await this.$api.patch(`${this.controller}/${id}`, patch)
 
-    let index = this.items.findIndex(s => s.id != id);
-    let item = res.data;
+    let index = this.items.findIndex(s => s.id != id)
+    let item = res.data
 
-    this.items[index] = clone(item);
+    this.items[index] = clone(item)
 
-    console.log('item', res.data);
+    console.log('item', res.data)
 
-    this.api_get();
+    this.api_get()
   }
 
   async do_removeAll() {
     let a = await Promise.all([
       ...this.items.map(item => this.do_mark(item, 'deleted', true))
-    ]);
-    this.api_get();
+    ])
+    this.api_get()
   }
 
   async do_spamAll() {
     let a = await Promise.all([
       ...this.items.map(item => this.do_mark(item, 'm_spam', true))
-    ]);
-    this.api_get();
+    ])
+    this.api_get()
   }
 
   ///////////////////////////////////////
 
   // onPageSelect(page){
-  //   console.log('page', page);
+  //   console.log('page', page)
   // },
 
   set_mode(mode: string) {
-    this.filter_mode = mode;
-    this.api_get();
+    this.filter_mode = mode
+    this.api_get()
   }
 
   get_modeAsQueryString() {
-    let filter_mode = this.filter_mode;
+    let filter_mode = this.filter_mode
     function get_modeAsQueryString() {
-      if (filter_mode == 'spam') return `m_spam=true&m_link=&deleted=false`;
-      else if (filter_mode == 'linked') return `m_spam=&m_link=true&deleted=`;
+      if (filter_mode == 'spam') return `m_spam=true&m_link=&deleted=false`
+      else if (filter_mode == 'linked') return `m_spam=&m_link=true&deleted=`
       else if (filter_mode == 'deleted')
-        return `m_spam=false&m_link=&deleted=true`;
-      else if (filter_mode == 'all') return `m_spam=&m_link=&deleted=`;
+        return `m_spam=false&m_link=&deleted=true`
+      else if (filter_mode == 'all') return `m_spam=&m_link=&deleted=`
       // if(filter_mode == 'actual')
-      else return `m_spam=false&m_link=&deleted=false&dt_actual=true`;
+      else return `m_spam=false&m_link=&deleted=false&dt_actual=true`
     }
-    return `&${get_modeAsQueryString()}&`;
+    return `&${get_modeAsQueryString()}&`
   }
 
   get_src_gromImgHtml(imgHtml: string) {
-    const def = 'statics/empty-photo.jpg';
+    const def = 'statics/empty-photo.jpg'
 
-    if (!imgHtml) return def;
+    if (!imgHtml) return def
     // input = "<img src="https://sun1-18.userapi.com/c849416/v849416832/16382e/6-2supeqNd4.jpg?ava=1" class="wi_img _p128419803">"
-    let reg = /src="(.*?)"/;
+    let reg = /src="(.*?)"/
 
-    let match = imgHtml.match(reg);
+    let match = imgHtml.match(reg)
 
-    let v: string = match ? match[1] : '';
+    let v: string = match ? match[1] : ''
 
-    if (v.indexOf('http') == -1) v = 'https://m.vk.com/' + trimSlash(v);
+    if (v.indexOf('http') == -1) v = 'https://m.vk.com/' + trimSlash(v)
 
-    return v ? v : def;
+    return v ? v : def
   }
 
   ///////////////////////////////////////
   row_color(e: JobItem) {
-    if (e.m_link) return '#a2d2ff';
-    else if (e.deleted) return 'red';
-    else if (e.m_spam) return 'orange';
+    if (e.m_link) return '#a2d2ff'
+    else if (e.deleted) return 'red'
+    else if (e.m_spam) return 'orange'
 
-    return 'unset';
+    return 'unset'
   }
 
   row_class(e: JobItem) {
-    if (e.m_spam) return `m_spam`;
-    else if (e.m_link) return `m_link`;
-    else if (e.deleted) return `m_del`;
-    else return ``;
+    if (e.m_spam) return `m_spam`
+    else if (e.m_link) return `m_link`
+    else if (e.deleted) return `m_del`
+    else return ``
   }
 }
-
-declare interface JobItem {
-  id: number; //72234
-  code: number; //0,
-  source: string;
-  title: string;
-  author: string; //"mdimai666"
-  link: string;
-  deleted: boolean;
-  body: string;
-  json: object;
-  dt_insert: Date; //"2020-01-05T06:05:12.315459+09:00"
-  dt_update: Date; //"2020-01-05T06:05:12.315459+09:00"
-  screenshot: string;
-  img: string;
-  m_spam: boolean;
-  m_link: boolean;
-  uid: string;
-}
 </script>
+
 
 <style lang="scss" scoped>
 // darken,lighten

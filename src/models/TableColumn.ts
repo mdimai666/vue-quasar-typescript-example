@@ -20,14 +20,16 @@ export class TableColumn<TType> {
     public classes: string = ''
     public style: string = ''
     public headerClasses: string = ''
-    
-    
+
+
     public type: Function
     public op_momentFormat = 'lll'
 
     public readonly: bool = false
     public m_options: IOption[] = []
     public hidden: bool = false
+
+    public m_istextarea: bool = false
 
 
     constructor(private t: new () => TType, name: string, label: string = '', field: string = '', private modelType?: Function) {
@@ -40,6 +42,8 @@ export class TableColumn<TType> {
 
         let readOnly: bool = false;
         let hidden: bool = false;
+        let m_istextarea: bool = false;
+
         let qmeta: IMeta | null = null;
 
         if (modelType) {
@@ -49,6 +53,7 @@ export class TableColumn<TType> {
         if (qmeta) {
             readOnly = qmeta.readOnlyList && qmeta.readOnlyList[this.field]
             hidden = qmeta.hiddenList && qmeta.hiddenList[this.field]
+            m_istextarea = qmeta.textareaList && qmeta.textareaList[this.field]
 
             let typeName: string;
 
@@ -67,6 +72,7 @@ export class TableColumn<TType> {
         // if(this.field == 'id') this.readonly = true;
         this.readonly = readOnly
         this.hidden = hidden
+        this.m_istextarea = m_istextarea
 
         this.format = this.Format
     }

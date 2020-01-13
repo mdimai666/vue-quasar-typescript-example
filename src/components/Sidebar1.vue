@@ -42,7 +42,6 @@
         </q-item-section>
       </q-item>
 
-
       <q-separator />
       <q-item-label header>Essential Links</q-item-label>
       <q-item clickable tag="a" target="_blank" href="https://quasar.dev">
@@ -121,12 +120,12 @@
 
 <script  lang="ts">
 import Vue from 'vue'
-import Component from 'vue-class-component';
+import Component from 'vue-class-component'
 
 @Component({})
 export default class Sidebar1 extends Vue {
-  m(){
-    let v = this.$api;
+  m() {
+    let v = this.$api
   }
 }
 

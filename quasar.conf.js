@@ -72,12 +72,14 @@ module.exports = function (ctx) {
       plugins: [
         'LocalStorage',
         'Notify',
+        'Dialog',
+        'Loading',
       ],
       config: {
         notify: {
           position: 'top-right',
           timeout: 1500,
-          color: 'white',
+          color: 'secondary',
           textColor: 'black',
         }
       }
