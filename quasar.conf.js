@@ -6,6 +6,7 @@ var path = require('path');
 var fs = require('fs');
 var dotenv = require('dotenv').config();
 
+
 if (!fs.existsSync('./.env'))
   throw new Error('/.env file not found.\n See .env.example ')
 
@@ -101,6 +102,7 @@ module.exports = function (ctx) {
 
       // https://quasar.dev/quasar-cli/cli-documentation/handling-webpack
       extendWebpack(cfg) {
+
       }
     },
 

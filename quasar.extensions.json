@@ -11,5 +11,29 @@
     "rename": true,
     "vscode": true,
     "prettier": true
+  },
+  "@quasar/icon-genie": {
+    "minify_dev": "pngquant",
+    "minify_build": "optipng",
+    "cordova": {
+      "background_color": "#000000",
+      "splashscreen_type": "pure"
+    },
+    "build_always": false,
+    "__internal": {
+      "dev": {
+        "electron": {
+          "iconHash": "d362f9690162ae62ceb727c39252fdcb"
+        }
+      },
+      "build": {
+        "cordova": {
+          "iconHash": "d362f9690162ae62ceb727c39252fdcb",
+          "splashscreenHash": "37267dceefd0fbf97af91b86c7b6dfaf",
+          "splashscreenType": "pure",
+          "backgroundColor": "#000074"
+        }
+      }
+    }
   }
 }

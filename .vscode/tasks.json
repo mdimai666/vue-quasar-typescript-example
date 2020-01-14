@@ -26,6 +26,11 @@
             "script": "build-spa",
             "group": "build",
             "problemMatcher": []
+        },
+        {
+            "type": "npm",
+            "script": "fopenapk:debug",
+            "problemMatcher": []
         }
     ]
 }
