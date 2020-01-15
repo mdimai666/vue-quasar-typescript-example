@@ -4,7 +4,7 @@
     "allowSyntheticDefaultImports": true,
     "allowJs": true,
     "sourceMap": true,
-    "target": "es6",
+    "target": "es5",//wa es6 - but only se5 work on Cordova
     "strict": true,
     "experimentalDecorators": true,
     "importHelpers": true,
