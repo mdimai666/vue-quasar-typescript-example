@@ -31,6 +31,11 @@
             "type": "npm",
             "script": "fopenapk:debug",
             "problemMatcher": []
+        },
+        {
+            "type": "npm",
+            "script": "dev",
+            "problemMatcher": []
         }
     ]
 }

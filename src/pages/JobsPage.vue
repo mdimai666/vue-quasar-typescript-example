@@ -30,7 +30,8 @@
 
     <p></p>
 
-    <q-list bordered separator>
+<!-- :bordered="!$q.screen.lt.sm" -->
+    <q-list  separator>
       <q-item
         v-for="item in items"
         :key="item.id"
