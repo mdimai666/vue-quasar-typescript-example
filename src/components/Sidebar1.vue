@@ -1,5 +1,18 @@
 <template>
   <div>
+    <q-img
+      class="absolute-top1"
+      src="/statics/material-head.png"
+      style="height: 150px"
+    >
+      <div class="absolute-bottom bg-transparent">
+        <q-avatar size="56px" class="q-mb-sm">
+          <img src="https://cdn.quasar.dev/img/boy-avatar.png" />
+        </q-avatar>
+        <div class="text-weight-bold">Razvan Stoenescu</div>
+        <div>@rstoenescu</div>
+      </div>
+    </q-img>
     <q-list>
       <q-item-label header>MENU</q-item-label>
 
@@ -67,7 +80,6 @@
           <q-item-label caption>github.com/quasarframework</q-item-label>
         </q-item-section>
       </q-item>
-
     </q-list>
   </div>
 </template>

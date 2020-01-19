@@ -1,23 +1,31 @@
 <template>
   <q-page padding>
     <div class="gt-xs">
-      test btns
-      <q-btn-group push>
-        <q-btn push color="primary" label="Get" @click="api_get" />
-        <q-btn push color="green" label="Add" @click="api_add" />
-        <q-btn push color="orange" label="Clear" @click="items = []" />
-      </q-btn-group>
     </div>
 
     <p></p>
     <q-separator spaced="" />
     <p></p>
 
-    <q-btn push size="lg" label="Dialog" @click="dd()" />
+    <transition
+      appear
+      enter-active-class="animated slide-in-up"
+      leave-active-class="animated fadeOut"
+    >
+      <div>
+        <q-btn
+          push
+          size="lg"
+          label="Dialog"
+          @click="dd()"
+          transition-show="jump-down"
+        />
 
-    <p>
-      count1 = <b>{{ count1 }}</b>
-    </p>
+        <p>
+          count1 = <b>{{ count1 }}</b>
+        </p>
+      </div>
+    </transition>
 
     <p></p>
     <q-separator spaced="" />
@@ -40,6 +48,7 @@
       >
         <template v-slot:top-right>
           <div class="q-gutter-xs flex">
+            <q-btn flat icon="add" @click="AddNew()" />
             <q-btn flat icon="refresh" @click="Update()" />
 
             <q-input
@@ -133,7 +142,7 @@ import LogItem from 'src/models/LogItem'
 import { QTableSetup } from 'src/models/QTableSetup'
 import { TableColumn } from '../models/TableColumn'
 import { AxiosResponse } from 'axios'
-import { IQBackend_ListRequestParam, ISResponseList } from '../class/QBackend'
+import { IQBackend_ListRequestParam } from 'src/controllers/QController'
 
 const columns_sample = [
   // array of Objects
@@ -230,8 +239,7 @@ columns_logs = table.Columns()
 
 @Component
 export default class LogsPage extends Vue {
-  // name: 'LogsName',
-  // data: () => ({
+
   items: LogItem[] = []
   controller: string = 'logs'
   v_page: int = 1
@@ -254,11 +262,6 @@ export default class LogsPage extends Vue {
   }
 
   columns: any = columns_logs
-  data: LogItem[] = [
-    new LogItem({ title: 'Title1' }),
-    new LogItem({ title: 'Titles 2' }),
-    new LogItem({ title: 'Titles 2', body: 'Zero town' })
-  ]
 
   root = getModule(RootStore, this.$store)
 
@@ -276,24 +279,17 @@ export default class LogsPage extends Vue {
     LocalStorage.set('v_perpage', v)
   }
 
-  // @Watch('v_perpage')
+  @Watch('v_perpage')
   onPerPageChanged(v: int, old: int) {
     LocalStorage.set('v_perpage', v)
-    this.api_get()
   }
 
   created() {
     this.v_perpage = LocalStorage.getItem('v_perpage') || 10
 
-    // this.api_get()
   }
 
   mounted() {
-    // get initial data from server (1st page)
-    // this.onRequest({
-    //   pagination: this.pagination,
-    //   filter: undefined
-    // })
     this.Update()
   }
 
@@ -305,41 +301,7 @@ export default class LogsPage extends Vue {
     return this.$store.state.root.count
   }
 
-  // methods: {
   // openURL,
-
-  async api_get() {
-    let link = `${this.controller}/list?page=${this.v_page}&perpage=${this.v_perpage}`
-    console.log(link)
-    let res = await this.$api.get(link)
-
-    if (res.status == 200 && res.data) {
-      let items = res.data.data
-      console.log(res.data)
-
-      this.items = clone(items)
-      this.v_totalPages = res.data.totalPages
-      this.v_totalCount = res.data.totalCount
-
-      return this.items
-    }
-
-    return false
-  }
-
-  async api_add() {
-    let item = {
-      id: 666,
-      body: 'body',
-      author: 'mdimai666'
-    }
-
-    let res = await this.$api.post(this.controller, item)
-
-    await this.api_get()
-
-    console.log(res)
-  }
 
   async click_del__reallyDel(id: int) {
     let res = await this.$api.delete(`${this.controller}/${id}`)
@@ -350,45 +312,16 @@ export default class LogsPage extends Vue {
   }
 
   onItemClick(item: LogItem) {
-    // this.do_mark(item, 'm_link', true)
-    // this.openURL('https://m.vk.com/' + item.link)
+
   }
 
-  // async click_del(id: int, _item: LogItem) {
-  //   await this.do_mark(_item, 'deleted', !_item.deleted)
-  // }
-  // async click_spam(id: int, _item: LogItem) {
-  //   await this.do_mark(_item, 'm_spam', !_item.m_spam)
-  // }
-  // async click_link(id: int, _item: LogItem) {
-  //   await this.do_mark(_item, 'm_link', !_item.m_link)
-  // }
+  AddNew() {
+    this.$q.notify('Not implement')
 
-  async do_mark(_item: LogItem, _propName: string, _val: any) {
-    const id = _item.id
-
-    if (!id) {
-      throw new Error('ID required')
-    }
-
-    (_item as any)[_propName] = _val
-
-    let patch = [
-      // {op: 'replace', path: '/deleted', value: !_item.deleted},
-      { op: 'replace', path: `/${_propName}`, value: _val }
-    ]
-
-    let res = await this.$api.patch(`${this.controller}/${id}`, patch)
-
-    let index = this.items.findIndex(s => s.id != id)
-    let item = res.data
-
-    this.items[index] = clone(item)
-
-    console.log('item', res.data)
-
-    this.api_get()
+    let id = (Math.random() * 50 | 0)
+    this.items.push(new LogItem({ title: 'title_' + id, id }))
   }
+
 
   user_delete(item: LogItem) {
     this.$q
@@ -423,8 +356,8 @@ export default class LogsPage extends Vue {
     const filter = props.filter
 
     this.v_loading = true
-
-    {
+    
+    try {
       const returnedData = await this.$backend.logs.list(this.AsRequestParam(props))
 
       if (returnedData) {
@@ -439,9 +372,14 @@ export default class LogsPage extends Vue {
         // this.pagination.descending = descending
         this.pagination.rowsNumber = returnedData.totalCount
 
-        // ...and turn of loading indicator
-        this.v_loading = false
       }
+    }
+    catch (err) {
+      this.$q.notifyError(err)
+    }
+    finally {
+      this.v_loading = false
+
     }
   }
 
@@ -476,7 +414,7 @@ export default class LogsPage extends Vue {
     try {
       let newItem = await this.$backend.logs.patch(e.id, e)
 
-      let index = this.items.findIndex(s => s.id == newItem.id);
+      let index = this.items.findIndex(s => s.id == newItem.id)
       this.items[index] = newItem
 
       this.show_modal = false
@@ -536,5 +474,4 @@ form /deep/ {
     }
   }
 }
-
 </style>

@@ -20,12 +20,12 @@
     </q-header>
 
     <q-drawer
+      overlay
       v-model="leftDrawerOpen"
       show-if-above
-      bordered
       content-class="bg-grey-2"
     >
-      <Sidebar1/>
+      <Sidebar1 />
     </q-drawer>
 
     <q-page-container>
@@ -40,8 +40,8 @@ import Vue from 'vue'
 import Component from 'vue-class-component'
 
 // Store modules
-import { getModule } from 'vuex-module-decorators';
-import LayoutStoreModule from './LayoutStoreModule';
+import { getModule } from 'vuex-module-decorators'
+import LayoutStoreModule from './LayoutStoreModule'
 
 // @Component
 // export default class MyLayout extends Vue {
@@ -53,11 +53,11 @@ export default class MyLayout extends Vue {
   store = getModule(LayoutStoreModule);
 
   get leftDrawerOpen() {
-    return this.store.leftDrawerOpen;
+    return this.store.leftDrawerOpen
   }
 
   set leftDrawerOpen(value: boolean) {
-    this.store.setLeftDrawerOpen(value);
+    this.store.setLeftDrawerOpen(value)
   }
 }
 

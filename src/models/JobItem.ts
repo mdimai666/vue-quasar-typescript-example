@@ -1,5 +1,8 @@
 import { IMeta, QMeta, AppendQMeta } from 'src/class/QMeta'
 import { FieldType, FReadOnly, FImage, FDropdown, FRadio, FCheckboxes, FHidden } from 'src/class/QDecorators'
+import $backend from 'src/class/QBackend'
+import $api from 'src/boot/api'
+import { NotifySuccess, NotifyError } from 'src/boot/notify'
 
 
 @AppendQMeta()
@@ -27,6 +30,28 @@ export class JobItem {
 
         if (item) Object.assign(this, item)
 
+    }
+
+    static async ParserUpdateAsync() {
+        // NotifySuccess('Updating...')
+
+        let res = await $api.get($api.RedURL + `/vk_api2/update`)
+        if (res.status == 200) {
+            NotifySuccess('Updating...')
+        } else {
+            NotifyError(res)
+        }
+    }
+
+    static async ParserSearch(text: string) {
+        // NotifySuccess('Searching...')
+
+        let res = await $api.get($api.RedURL + `/vk_api2/search?search=${text}`)
+        if (res.status == 200) {
+            NotifySuccess(`Searching... ${text}`)
+        } else {
+            NotifyError(res)
+        }
     }
 
 }

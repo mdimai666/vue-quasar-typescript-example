@@ -1,37 +1,60 @@
 <template>
   <q-page padding>
+    <q-toolbar class="text-primary">
+      <q-toolbar-title>
+        List of Jobs
+      </q-toolbar-title>
+      <div class="q-block-inline q-gutter-sm">
+        <q-btn
+          push
+          round
+          dense
+          size="lg"
+          icon="refresh"
+          @click="UserRefreshParser()"
+        />
+        <q-btn
+          push
+          round
+          dense
+          size="lg"
+          icon="search"
+          @click="OpenSearchDialog()"
+        />
+      </div>
+    </q-toolbar>
+
     <p></p>
-    <h4 class="q-ma-sm text-primary">{{ filter_mode }} ({{ v_totalCount }})</h4>
+    <h4 class="q-ma-sm text-primary">{{ getTitle }}</h4>
     <p></p>
+
     <p></p>
-    <div class="gt-xs">
-      test btns
-      <q-btn-group push>
-        <q-btn push color="primary" label="Get" @click="api_get" />
-        <q-btn push color="green" label="Add" @click="api_add" />
-        <q-btn push color="orange" label="Clear" @click="items = []" />
-      </q-btn-group>
-    </div>
-    <p></p>
-    <q-separator />
-    <p></p>
-    <q-btn-group push>
-      <q-btn push color="primary" label="Actual" @click="set_mode('actual')" />
-      <q-btn push color="green" label="Link" @click="set_mode('linked')" />
-      <q-btn push color="orange" label="Spam" @click="set_mode('spam')" />
-      <q-btn push color="red" @click="set_mode('deleted')">
+    <q-btn-group flat spread>
+      <q-btn
+        color="primary"
+        label="Actual"
+        @click="set_mode(EJobsKind.actual)"
+      />
+      <q-btn color="green" label="Link" @click="set_mode(EJobsKind.linked)" />
+      <q-btn color="orange" label="Spam" @click="set_mode(EJobsKind.spam)" />
+      <q-btn color="red" @click="set_mode(EJobsKind.deleted)">
         <div class="gt-xs">Deleted</div>
         <div class="xs">del</div>
       </q-btn>
-      <q-btn push label="All" @click="set_mode('all')" />
+      <q-btn
+        color="grey-4"
+        class="text-black"
+        label="All"
+        @click="set_mode(EJobsKind.all)"
+      />
     </q-btn-group>
     <p></p>
     <q-separator />
 
     <p></p>
 
-<!-- :bordered="!$q.screen.lt.sm" -->
-    <q-list  separator>
+    <!-- :bordered="!$q.screen.lt.sm" -->
+    <q-list separator>
       <q-item
         v-for="item in items"
         :key="item.id"
@@ -105,12 +128,13 @@
             <!-- copy -->
             <q-btn
               class="gt-xs1"
-              label="COPY"
               flat
               dense
               icon="file_copy"
               @click="click_copy(item)"
-            />
+            >
+              <span class="gt-sm">Copy</span>
+            </q-btn>
 
             <!-- spam -->
             <q-btn
@@ -135,48 +159,6 @@
             />
           </div>
           <!-- //tools -->
-        </q-item-section>
-
-        <q-item-section side bottom class="hidden">
-          <div class="text-grey-8 q-gutter-xs">
-            <q-btn
-              class="gt-xs1"
-              size="12px"
-              flat
-              dense
-              round
-              icon="report_problem"
-              @click="click_spam(item.id, item)"
-            />
-
-            <q-btn
-              class="gt-xs1"
-              size="12px"
-              flat
-              dense
-              round
-              icon="delete"
-              color="red"
-              @click="click_del(item.id, item)"
-            />
-            <q-btn
-              class="gt-xs hidden"
-              size="12px"
-              flat
-              dense
-              round
-              icon="done"
-              @click="click_link(item.id, item)"
-            />
-            <q-btn
-              size="12px"
-              flat
-              dense
-              round
-              icon="more_vert"
-              class="hidden"
-            />
-          </div>
         </q-item-section>
       </q-item>
     </q-list>
@@ -221,20 +203,21 @@
 
     <!-- footer action -->
 
-    <q-btn-group push>
-      <q-btn
-        color="red"
-        label="Remove all"
-        icon="delete"
-        @click="do_removeAll"
-      />
-      <q-btn
-        color="orange"
-        label="Spam all"
-        icon="report_problem"
-        @click="do_spamAll"
-      />
+    <q-btn-group flat>
+      <q-btn color="red" icon="delete" @click="do_removeAll">
+        <div class="gt-xs">
+          Remove
+        </div>
+        all
+      </q-btn>
+      <q-btn color="orange" icon="report_problem" @click="do_spamAll">
+        <span class="gt-xs">Spam</span>
+        all
+      </q-btn>
     </q-btn-group>
+
+    <!-- Dialog search -->
+    <DialogSearchJob v-model="dialogSearch" @submit="OnSearchSubmit" />
   </q-page>
 </template>
 
@@ -246,13 +229,14 @@ import { trimSlash, clone } from '../js/functions1'
 import Component from 'vue-class-component'
 import { Watch, Provide } from 'vue-property-decorator'
 import { JobItem } from '../models/JobItem'
+import { EJobsKind } from '../controllers/JobsController'
+import { IQBackend_ListRequestParam } from 'src/controllers/QController'
+import DialogSearchJob from 'src/components/DialogSearchJob.vue'
 
-@Component
-// export default class LogsPage extends Vue implements Vue {
+@Component({
+  components: { DialogSearchJob }
+})
 export default class LogsPage extends Vue {
-  // export default Vue.extend({
-  // name: 'PageApi',
-  // data: () => ({
   items: JobItem[] = []
   controller: string = 'jobs'
   v_page: int = 1
@@ -262,7 +246,12 @@ export default class LogsPage extends Vue {
   c_perPageVariants: int[] = [5, 10, 15, 25, 50]
 
   filter_mode: string = 'actual'
-  // }),
+
+  dialogSearch: bool = false
+
+  jobKind: EJobsKind = EJobsKind.actual
+
+  EJobsKind = EJobsKind
 
   // watch: {
   //   v_perpage(n:int, o:int) {
@@ -283,51 +272,65 @@ export default class LogsPage extends Vue {
   @Watch('v_perpage')
   onPerPageChanged(v: int, old: int) {
     LocalStorage.set('v_perpage', v)
-    this.api_get()
+    this.Update()
   }
 
   created() {
-    console.log(123)
 
     this.v_perpage = LocalStorage.getItem('v_perpage') || 10
 
-    this.api_get()
+    let q_jobKind: string = this.$route.query['jobKind'] as string
+    if (q_jobKind)
+      this.jobKind = (EJobsKind as any)[q_jobKind]
+
+    this.Update()
   }
 
-  // openURL = (url) =  => openU,
+  openURL = openURL
   copyToClipboard = copyToClipboard
 
-  async api_get() {
-    let link = `${this.controller}/list?page=${this.v_page}&perpage=${this.v_perpage}${this.get_modeAsQueryString()}`
-    console.log(link)
-    let res = await this.$api.get(link)
-
-    this.$backend
-
-    if (res.status == 200 && res.data) {
-      let items = res.data.data
-      console.log(res.data)
-
-      this.items = clone(items)
-      this.v_totalPages = res.data.totalPages
-      this.v_totalCount = res.data.totalCount
-
-      return this.items
-    }
-
-    return false
+  get getTitle(): string {
+    // return `${this.filter_mode} (${this.v_totalCount})`
+    return `${EJobsKind[this.jobKind]} (${this.v_totalCount})`
   }
 
-  async api_add() {
-    let item = {
-      id: 666,
-      body: 'body',
-      author: 'mdimai666'
+  async Update(): Promise<void> {
+    try {
+
+      let param: IQBackend_ListRequestParam = {
+        page: this.v_page,
+        perpage: this.v_perpage,
+        sort: undefined,
+        desc: true,
+      }
+
+      let res = await this.$backend.jobs.list2(param, this.jobKind)
+
+      if (res) {
+
+        this.items = res.data
+        this.v_totalPages = res.totalPages
+        this.v_totalCount = res.totalCount
+
+      }
+
+    } catch (err) {
+      this.$q.notifyError(err)
+    } finally {
+
     }
+  }
 
-    let res = await this.$api.post(this.controller, item)
+  async UserRefreshParser() {
+    await JobItem.ParserUpdateAsync()
+  }
 
-    console.log(res)
+  OpenSearchDialog() {
+    this.dialogSearch = true
+  }
+
+  OnSearchSubmit(text: string) {
+    JobItem.ParserSearch(text)
   }
 
   async click_del__reallyDel(id: int) {
@@ -353,7 +356,7 @@ export default class LogsPage extends Vue {
     await this.do_mark(_item, 'm_link', !_item.m_link)
   }
 
-  click_copy(item: JobItem){
+  click_copy(item: JobItem) {
     this.copyToClipboard(item.body)
     this.$q.notify('copied')
 
@@ -382,21 +385,21 @@ export default class LogsPage extends Vue {
 
     console.log('item', res.data)
 
-    this.api_get()
+    this.Update()
   }
 
   async do_removeAll() {
     let a = await Promise.all([
       ...this.items.map(item => this.do_mark(item, 'deleted', true))
     ])
-    this.api_get()
+    this.Update()
   }
 
   async do_spamAll() {
     let a = await Promise.all([
       ...this.items.map(item => this.do_mark(item, 'm_spam', true))
     ])
-    this.api_get()
+    this.Update()
   }
 
   ///////////////////////////////////////
@@ -405,23 +408,10 @@ export default class LogsPage extends Vue {
   //   console.log('page', page)
   // },
 
-  set_mode(mode: string) {
-    this.filter_mode = mode
-    this.api_get()
-  }
-
-  get_modeAsQueryString() {
-    let filter_mode = this.filter_mode
-    function get_modeAsQueryString() {
-      if (filter_mode == 'spam') return `m_spam=true&m_link=&deleted=false`
-      else if (filter_mode == 'linked') return `m_spam=&m_link=true&deleted=`
-      else if (filter_mode == 'deleted')
-        return `m_spam=false&m_link=&deleted=true`
-      else if (filter_mode == 'all') return `m_spam=&m_link=&deleted=`
-      // if(filter_mode == 'actual')
-      else return `m_spam=false&m_link=&deleted=false&dt_actual=true`
-    }
-    return `&${get_modeAsQueryString()}&`
+  set_mode(mode: EJobsKind) {
+    this.jobKind = mode
+    this.$router.replace('/jobs/?jobKind=' + EJobsKind[this.jobKind])
+    this.Update()
   }
 
   get_src_fromImgHtml(imgHtml: string) {

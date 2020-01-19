@@ -18,11 +18,6 @@ module.exports = function (ctx) {
       router: 'src/router/index.ts',
       store: 'src/store/index.ts'
     },
-    // Quasar looks for *.js files by default
-    sourceFiles: {
-      router: 'src/router/index.ts',
-      store: 'src/store/index.ts'
-    },
     // app boot file (/src/boot)
     // --> boot files are part of "main.js"
     // https://quasar.dev/quasar-cli/cli-documentation/boot-files
@@ -32,6 +27,7 @@ module.exports = function (ctx) {
       'ddd',
       'vue.api',
       'myfilters',
+      'notify'
     ],
 
     // https://quasar.dev/quasar-cli/quasar-conf-js#Property%3A-css
@@ -115,7 +111,10 @@ module.exports = function (ctx) {
 
     // animations: 'all', // --- includes all animations
     // https://quasar.dev/options/animations
-    animations: [],
+    // animations: [],
+    // https://daneden.github.io/animate.css/
+
+    animations: 'all',
 
     // https://quasar.dev/quasar-cli/developing-ssr/configuring-ssr
     ssr: {

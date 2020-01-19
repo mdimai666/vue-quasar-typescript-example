@@ -1,4 +1,4 @@
-import myfilters from '../js/filters'
+import myfilters from 'src/js/filters'
 //https://stackoverflow.com/questions/47004702/how-to-add-a-bunch-of-global-filters-in-vue-js
 
 // eslint-disable-next-line @typescript-eslint/ban-ts-ignore

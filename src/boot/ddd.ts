@@ -3,8 +3,8 @@
 // "async" is optional
 
 
-import Sidebar1 from '../components/Sidebar1.vue';
-import DItemEditor from '../components/DItemEditor.vue'
+import Sidebar1 from 'src/components/Sidebar1.vue';
+import DItemEditor from 'src/components/DItemEditor.vue'
 
 // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
 // @ts-ignore

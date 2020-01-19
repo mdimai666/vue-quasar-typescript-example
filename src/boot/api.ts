@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { fullUrl } from './../js/functions1'
+import { fullUrl } from 'src/js/functions1'
 
 const instance = axios.create({
   // withCredentials: true,
@@ -8,14 +8,24 @@ const instance = axios.create({
 // console.warn(process.env);
 
 let backend = process.env.BACKEND
+let red = process.env.RED
 
 if (backend)
-  backend = backend.includes('//') ? process.env.BACKEND : '//' + process.env.BACKEND
+  backend = backend.includes('//') ? backend : '//' + backend
+if (red)
+  red = red.includes('//') ? red : '//' + red
 
 instance.defaults.baseURL = backend + '/api/'
 
 Object.defineProperty(instance, "BackendURL", {
   value: instance.defaults.baseURL,
+  writable: false,
+  enumerable: true,
+  configurable: true
+})
+
+Object.defineProperty(instance, "RedURL", {
+  value: red,
   writable: false,
   enumerable: true,
   configurable: true
@@ -29,6 +39,7 @@ declare module 'axios' {
   // 3. Объявите расширение для Vue
   interface AxiosInstance {
     BackendURL: string
+    RedURL: string
     fullUrl: (urlPart: string) => string
   }
 }

@@ -131,6 +131,44 @@ export function fullUrl(...params: string[]) {
   return h
 }
 
+export interface IKeyVal {
+  key: string,
+  val: string | number | boolean
+}
+
+export function ObjectMapAsKeyVal(obj: any): IKeyVal[] | undefined {
+  if (obj) {
+    let list: IKeyVal[] = []
+    for (let key of Object.keys(obj)) {
+      list.push({
+        key: key,
+        val: obj[key]
+      })
+    }
+    return list
+  } else {
+    return
+  }
+}
+
+export function ObjectToQueryString(param: any): string {
+  let ee = ObjectMapAsKeyVal(param)
+  if (param && ee) {
+
+    let st = ''
+
+    for (let e of ee) {
+      if (typeof e.val !== 'undefined') {
+        st += `&${e.key}=${e.val}`
+      }
+    }
+
+    return st
+  } else {
+    return ''
+  }
+}
+
 // export function all_childs(arr: any[], id: number | number[], prop_parent_id: string, __maxDepth = 15) {
 //   if (__maxDepth < 1) return []
 //   prop_parent_id = prop_parent_id || 'parent_id'
@@ -235,4 +273,6 @@ export default {
   // all_childs,
   translate_monthName,
   isString,
+  ObjectMapAsKeyVal,
+  ObjectToQueryString,
 }

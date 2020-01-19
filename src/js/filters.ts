@@ -1,6 +1,6 @@
 import { date } from 'quasar'
 import { translate_monthName } from './functions1'
-import api from '../boot/api'
+import api from 'src/boot/api'
 
 import * as moment from 'moment'
 
